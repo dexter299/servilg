@@ -1,0 +1,293 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Servi LG · Servicio técnico especializado</title>
+<meta name="description" content="Servicio técnico especializado a domicilio en Medellín y el Valle de Aburrá: neveras, lavadoras, calentadores, secadoras y hornos microondas. 4 meses de garantía.">
+<meta name="theme-color" content="#0a0a0b">
+<meta property="og:title" content="Servi LG · Servicio técnico especializado">
+<meta property="og:description" content="Reparación y mantenimiento a domicilio de neveras, lavadoras, calentadores, secadoras y microondas. 4 meses de garantía.">
+<meta property="og:image" content="assets/logo.jpg">
+<link rel="icon" href="assets/logo.jpg">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:ital,wght@1,700;1,800&family=Barlow:wght@400;500;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="styles.css">
+</head>
+<body>
+<div class="page">
+
+  <header class="wrap topbar">
+    <img class="logo" src="assets/logo.jpg" alt="Servi LG, servicio técnico especializado" width="84" height="84">
+    <nav class="nav" aria-label="Principal">
+      <a href="#servicios">Servicios</a>
+      <a href="#precios">Precios</a>
+      <a href="#cobertura">Cobertura</a>
+      <a href="#preguntas">Preguntas</a>
+    </nav>
+    <a class="btn btn-outline btn-sm" data-wa href="#contacto">Pedir servicio por WhatsApp</a>
+  </header>
+
+  <main>
+    <!-- Banner -->
+    <section class="wrap hero">
+      <div class="hero-copy">
+        <div class="eyebrow">Servicio técnico especializado</div>
+        <h1>¿Tu LG muestra<br>un <span>error</span>?</h1>
+        <p>Gira la perilla, elige el código que ves en la pantalla de tu lavadora y descubre qué le pasa. Luego mira cómo la dejamos.</p>
+        <div class="row">
+          <a class="btn btn-primary" data-wa href="#contacto">Agendar visita</a>
+          <a class="btn btn-ghost" href="#servicios">Ver servicios</a>
+        </div>
+        <div class="badge">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#ff5470" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3l7 3v5c0 5-3 8-7 10-4-2-7-5-7-10V6l7-3z"/><path d="M9 12l2 2 4-4"/></svg>
+          <span>4 meses de garantía en cada reparación</span>
+        </div>
+        <div class="devices">
+          <span>Neveras</span><span aria-hidden="true">·</span><span>Lavadoras</span><span aria-hidden="true">·</span><span>Calentadores</span><span aria-hidden="true">·</span><span>Secadoras</span><span aria-hidden="true">·</span><span>Microondas</span>
+        </div>
+      </div>
+
+      <div class="washer-col">
+        <div class="washer" id="washer">
+          <div class="lcd">
+            <div class="lcd-info">
+              <span class="lcd-label">PANTALLA LAVADORA LG</span>
+              <span class="lcd-status" id="status">Falla detectada</span>
+            </div>
+            <div class="lcd-code" id="code">OE</div>
+            <button type="button" class="knob" id="knob" aria-label="Girar la perilla al siguiente código"><span></span></button>
+          </div>
+          <div class="codes" id="codes"></div>
+          <button type="button" class="door" id="door" aria-label="Puerta de la lavadora: cambiar al siguiente código">
+            <span class="door-ring"></span>
+            <span class="door-glass"><span class="drum"></span><span class="glare"></span></span>
+          </button>
+          <span class="hint">Toca la puerta o elige un código</span>
+          <p class="meaning" id="meaning"></p>
+          <button type="button" class="btn btn-primary" id="fix">Repararlo</button>
+        </div>
+      </div>
+    </section>
+
+    <!-- Servicios -->
+    <section class="wrap section" id="servicios">
+      <div class="section-head">
+        <div class="eyebrow">Servicios</div>
+        <h2 class="title">Reparamos los equipos de tu casa</h2>
+      </div>
+      <div class="grid">
+        <div class="card">
+          <svg viewBox="0 0 48 48" fill="none" stroke="#fff" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="10" y="3" width="28" height="42" rx="4"/><line x1="10" y1="19" x2="38" y2="19"/><line x1="16" y1="10" x2="16" y2="14"/><line x1="16" y1="25" x2="16" y2="33"/></svg>
+          <h3>Neveras</h3>
+          <p>No enfría, hace ruido, forma hielo de más o muestra un código de error.</p>
+        </div>
+        <div class="card">
+          <svg viewBox="0 0 48 48" fill="none" stroke="#fff" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="7" y="3" width="34" height="42" rx="4"/><line x1="7" y1="12" x2="41" y2="12"/><circle cx="24" cy="29" r="10"/><line x1="12" y1="8" x2="20" y2="8"/></svg>
+          <h3>Lavadoras</h3>
+          <p>No desagua, no centrifuga, no entra agua, se detiene o muestra OE, UE, IE y otros códigos.</p>
+        </div>
+        <div class="card">
+          <svg viewBox="0 0 48 48" fill="none" stroke="#fff" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="12" y="3" width="24" height="36" rx="5"/><path d="M24 14c4 4 5 7 3 10-1 2-5 2-6 0-1-2 1-4 1-6"/><line x1="18" y1="39" x2="18" y2="45"/><line x1="30" y1="39" x2="30" y2="45"/></svg>
+          <h3>Calentadores</h3>
+          <p>No enciende, no calienta bien o presenta fallas en el encendido y el flujo de agua.</p>
+        </div>
+        <div class="card">
+          <svg viewBox="0 0 48 48" fill="none" stroke="#fff" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="7" y="3" width="34" height="42" rx="4"/><circle cx="15" cy="9" r="1"/><circle cx="21" cy="9" r="1"/><circle cx="27" cy="9" r="1"/><circle cx="24" cy="29" r="10"/></svg>
+          <h3>Secadoras</h3>
+          <p>No seca, no calienta, hace ruido o se apaga antes de terminar el ciclo.</p>
+        </div>
+        <div class="card">
+          <svg viewBox="0 0 48 48" fill="none" stroke="#fff" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="11" width="42" height="26" rx="4"/><rect x="9" y="16" width="22" height="16" rx="2"/><line x1="38" y1="17" x2="38" y2="17.1"/><line x1="38" y1="24" x2="38" y2="24.1"/><line x1="38" y1="31" x2="38" y2="31.1"/></svg>
+          <h3>Hornos microondas</h3>
+          <p>No calienta, no gira el plato, hace chispas, no enciende o el panel no responde.</p>
+        </div>
+      </div>
+    </section>
+
+    <!-- Garantía -->
+    <section class="warranty" id="garantia">
+      <div class="warranty-in">
+        <div class="big">
+          <span class="num">4</span>
+          <span class="label">meses<br>de garantía</span>
+        </div>
+        <p>Cada reparación que hacemos tiene 4 meses de garantía. Si el problema vuelve, nos escribes y lo atendemos.</p>
+      </div>
+    </section>
+
+    <!-- Cómo funciona -->
+    <section class="wrap section">
+      <div class="section-head">
+        <div class="eyebrow">Cómo funciona</div>
+        <h2 class="title">Cuatro pasos y listo</h2>
+      </div>
+      <div class="grid">
+        <div class="step"><span class="n">01</span><h3>Escríbenos</h3><p>Cuéntanos por WhatsApp qué equipo es y qué código o falla muestra.</p></div>
+        <div class="step"><span class="n">02</span><h3>Agendamos la visita</h3><p>Acordamos día y hora para que el técnico llegue a tu casa.</p></div>
+        <div class="step"><span class="n">03</span><h3>Diagnóstico y reparación</h3><p>Revisamos el equipo, te explicamos qué tiene y lo reparamos.</p></div>
+        <div class="step"><span class="n">04</span><h3>4 meses de garantía</h3><p>Tu reparación queda respaldada. Si algo falla, te atendemos.</p></div>
+      </div>
+    </section>
+
+    <!-- Equipo -->
+    <section class="wrap section tight" id="equipo">
+      <div class="section-head">
+        <div class="eyebrow">Nuestro equipo</div>
+        <h2 class="title">Conoce quién llega a tu casa</h2>
+        <p class="lead">Sabes quién es el técnico antes de que toque tu puerta.</p>
+      </div>
+      <div class="grid team">
+        <article class="tech">
+          <!-- Para poner la foto: cambia este bloque por <img src="assets/julian.jpg" alt="Julián Hernández, técnico"> -->
+          <div class="tech-photo">
+            <svg viewBox="0 0 48 48" fill="none" stroke="#71717a" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="24" cy="17" r="8"/><path d="M8 43c1-9 7-14 16-14s15 5 16 14"/></svg>
+            <span>[FOTO DEL TÉCNICO]</span>
+          </div>
+          <div class="tech-info"><h3>Julián Hernández</h3><span>10 años de experiencia</span></div>
+        </article>
+        <article class="tech">
+          <!-- Para poner la foto: cambia este bloque por <img src="assets/hector.jpg" alt="Héctor López, técnico"> -->
+          <div class="tech-photo">
+            <svg viewBox="0 0 48 48" fill="none" stroke="#71717a" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="24" cy="17" r="8"/><path d="M8 43c1-9 7-14 16-14s15 5 16 14"/></svg>
+            <span>[FOTO DEL TÉCNICO]</span>
+          </div>
+          <div class="tech-info"><h3>Héctor López</h3><span>30 años de experiencia</span></div>
+        </article>
+      </div>
+    </section>
+
+    <!-- Precios -->
+    <section class="wrap section tight" id="precios">
+      <div class="section-head">
+        <div class="eyebrow">Precios</div>
+        <h2 class="title">Precios claros, con garantía</h2>
+      </div>
+      <div class="grid">
+        <div class="price-card"><span class="name">Revisión</span><span class="price">$50.000</span><span class="note">Revisión y diagnóstico del equipo en tu casa.</span></div>
+        <div class="price-card"><span class="name">Nevera · mantenimiento preventivo</span><span class="price">$245.000</span><span class="note">Con filtro externo.</span></div>
+        <div class="price-card"><span class="name">Lavadora carga superior · mantenimiento</span><span class="price">$160.000</span><span class="note">Mantenimiento completo del equipo.</span></div>
+        <div class="price-card"><span class="name">Lavadora carga frontal · mantenimiento preventivo</span><span class="price">$220.000</span><span class="note">Limpieza y revisión preventiva.</span></div>
+        <div class="price-card hot"><span class="name">Lavadora carga frontal · mantenimiento general</span><span class="price">$460.000</span><span class="note">Mantenimiento general completo.</span></div>
+        <div class="price-card"><span class="name">Reparaciones</span><span class="price">Según diagnóstico</span><span class="note">Neveras, lavadoras, calentadores, secadoras y microondas. Con 4 meses de garantía.</span></div>
+      </div>
+      <p class="fineprint">El valor de cada reparación se define después de la revisión.</p>
+    </section>
+
+    <!-- Cobertura -->
+    <section class="wrap section tight" id="cobertura">
+      <div class="coverage">
+        <div class="coverage-left">
+          <div class="eyebrow"><span class="bar"></span>Cobertura</div>
+          <h2 class="title">Zonas donde trabajamos</h2>
+          <p class="lead">Atendemos a domicilio en Medellín y sus alrededores. Toca una zona para verla en el mapa.</p>
+          <div class="zgrid" id="zones"></div>
+          <p class="zone-note" id="zone-note"></p>
+        </div>
+        <div class="map-col">
+          <div class="map" id="map">
+            <svg viewBox="0 0 1000 940" role="img" aria-label="Mapa en relieve del Valle de Aburrá con las zonas de cobertura">
+              <defs>
+            <filter id="glow" x="-10%" y="-10%" width="120%" height="120%">
+              <feGaussianBlur stdDeviation="7" result="b"/>
+              <feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge>
+            </filter>
+            <path id="d-medellin" vector-effect="non-scaling-stroke" d="M203 244L197 242L187 246L173 248L163 256L148 255L142 257L133 247L122 250L116 257L109 255L95 245L87 252L81 246L67 244L53 249L42 251L38 267L30 275L31 289L34 290L42 338L29 342L24 359L30 378L36 386L26 394L25 402L28 425L43 437L48 448L55 454L54 469L63 488L64 497L60 509L65 523L62 531L63 555L69 568L64 571L57 617L55 634L56 652L64 657L63 666L56 672L62 676L61 685L57 700L57 710L65 708L73 715L83 728L85 747L81 763L92 783L87 796L98 826L85 842L84 849L97 858L105 879L111 883L129 887L137 901L146 909L148 927L158 944L156 976L165 992L176 982L185 979L199 989L223 980L232 969L244 965L256 964L278 964L285 965L319 955L325 950L316 933L324 922L334 914L343 911L351 896L344 884L342 877L352 874L371 877L387 874L400 868L415 866L421 870L436 869L442 862L450 863L455 869L475 875L476 887L488 882L493 874L506 878L515 875L506 902L517 911L520 921L545 937L558 939L562 943L576 950L585 948L598 951L604 945L642 954L646 959L657 963L662 969L674 964L678 955L693 946L686 942L694 928L693 919L693 891L695 881L687 871L707 875L731 877L734 886L744 880L767 887L774 887L780 896L795 899L808 899L813 891L826 895L857 895L854 890L861 881L863 871L853 858L852 845L856 839L853 819L842 813L835 806L838 786L848 768L838 766L839 758L855 750L872 758L885 747L885 741L894 738L899 732L895 722L896 713L887 707L874 690L856 677L851 658L834 643L836 635L825 617L817 614L820 604L825 602L829 591L823 583L817 561L811 557L809 547L802 546L799 537L805 524L798 517L788 520L779 510L769 510L751 501L736 511L732 519L728 535L723 547L709 551L702 536L696 528L697 520L694 510L683 505L672 512L666 503L656 495L635 486L607 477L602 465L595 462L574 463L567 460L559 462L554 467L533 466L513 474L493 470L486 473L454 481L444 476L434 475L425 469L418 458L405 453L389 458L370 455L365 452L355 458L350 453L332 445L325 444L314 429L300 426L287 407L274 395L263 388L263 381L254 366L251 354L253 345L252 323L233 294L225 290L216 276L215 263L212 252Z"/>
+            <path id="d-bello" vector-effect="non-scaling-stroke" d="M687 189L674 195L663 192L639 193L628 208L618 209L609 207L602 195L593 172L573 140L570 124L572 112L571 90L566 74L561 69L545 72L536 68L523 58L508 59L495 45L489 34L478 24L468 41L466 53L455 68L453 75L441 95L434 98L405 105L390 130L390 143L387 150L390 159L387 177L375 201L366 209L346 207L331 200L313 189L302 177L276 163L266 155L247 146L241 139L227 131L232 147L231 164L226 176L222 205L216 209L217 223L203 244L212 252L215 263L216 276L225 290L233 294L252 323L253 345L251 354L254 366L263 381L263 388L274 395L287 407L300 426L314 429L325 444L332 445L350 453L355 458L365 452L370 455L389 458L405 453L418 458L425 469L434 475L444 476L454 481L486 473L493 470L513 474L533 466L554 467L559 462L567 460L574 463L595 462L602 465L607 477L635 486L656 495L666 503L672 512L683 505L694 510L697 520L696 528L702 536L709 551L723 547L723 534L719 520L715 516L706 497L703 472L689 441L690 437L684 416L676 402L674 391L682 374L718 369L722 357L729 356L736 341L743 342L739 323L744 316L743 307L749 288L739 275L724 263L717 256L711 244L710 236L695 219L690 211L683 207Z"/>
+            <path id="d-copacabana" vector-effect="non-scaling-stroke" d="M976 380L946 378L935 366L930 354L911 340L898 333L885 314L876 309L863 262L854 249L854 243L864 235L871 231L883 238L895 235L889 228L876 223L870 218L869 211L857 196L853 183L845 179L839 147L845 132L841 118L842 97L838 90L834 71L838 60L842 56L844 40L836 41L828 51L825 69L816 67L817 81L808 91L800 94L795 87L789 88L785 100L779 100L769 94L758 107L761 115L752 118L740 112L737 123L738 132L726 134L717 141L717 171L687 189L683 207L690 211L695 219L710 236L711 244L717 256L724 263L739 275L749 288L743 307L744 316L739 323L743 342L736 341L729 356L722 357L718 369L682 374L674 391L676 402L684 416L690 437L689 441L703 472L706 497L715 516L719 520L723 534L723 547L728 535L732 519L736 511L751 501L769 510L779 510L788 520L815 513L823 514L831 530L844 519L846 505L838 503L840 493L834 486L837 481L859 469L861 450L858 436L868 432L878 431L879 441L888 444L903 439L920 437L926 431L933 418L948 416L958 409L973 395Z"/>
+            <path id="d-itagui" vector-effect="non-scaling-stroke" d="M506 902L515 875L506 878L493 874L488 882L476 887L475 875L455 869L450 863L442 862L436 869L421 870L415 866L400 868L387 874L371 877L352 874L342 877L344 884L351 896L343 911L334 914L324 922L316 933L325 950L319 955L285 965L278 964L283 970L286 986L296 991L310 993L318 991L321 998L358 1007L357 1029L372 1020L386 1016L414 1000L429 995L435 987L441 968L472 943L490 917Z"/>
+            <path id="d-envigado" vector-effect="non-scaling-stroke" d="M857 895L826 895L813 891L808 899L795 899L780 896L774 887L767 887L744 880L734 886L731 877L707 875L687 871L695 881L693 891L693 919L694 928L686 942L693 946L678 955L674 964L662 969L657 963L646 959L642 954L604 945L598 951L585 948L576 950L562 943L558 939L545 937L520 921L517 911L506 902L490 917L472 943L441 968L435 987L429 995L440 1006L432 1013L440 1028L450 1032L459 1047L459 1059L479 1060L478 1081L475 1088L474 1104L479 1116L485 1121L488 1146L480 1165L482 1175L502 1184L514 1185L532 1196L542 1212L542 1224L553 1217L566 1199L572 1196L594 1203L613 1204L623 1196L634 1185L638 1165L650 1162L653 1150L740 1081L739 1077L756 1063L756 1058L781 1054L792 1064L815 1062L834 1052L832 1040L835 1035L832 1023L834 1014L842 1011L849 1002L864 1010L889 1013L892 1002L895 971L888 964L877 965L873 955L858 947L858 937L854 928L863 924L869 916L859 905Z"/>
+            <path id="d-sabaneta" vector-effect="non-scaling-stroke" d="M482 1175L480 1165L488 1146L485 1121L479 1116L474 1104L475 1088L478 1081L479 1060L459 1059L459 1047L450 1032L440 1028L432 1013L440 1006L429 995L414 1000L386 1016L372 1020L357 1029L332 1034L326 1042L339 1051L346 1066L345 1071L335 1071L335 1084L344 1082L349 1097L357 1107L368 1113L375 1121L384 1121L400 1128L403 1136L417 1147L422 1158L426 1161L449 1167L463 1167L467 1170Z"/>
+            <path id="d-laestrella" vector-effect="non-scaling-stroke" d="M278 964L256 964L244 965L232 969L223 980L199 989L185 979L176 982L165 992L166 997L165 1017L167 1037L170 1040L170 1056L165 1070L173 1076L169 1094L181 1111L182 1125L185 1132L190 1153L199 1154L209 1149L213 1165L220 1170L222 1178L243 1189L269 1189L278 1187L284 1181L297 1181L297 1177L323 1181L333 1195L343 1199L348 1194L356 1194L364 1187L380 1185L392 1179L401 1169L412 1169L426 1161L422 1158L417 1147L403 1136L400 1128L384 1121L375 1121L368 1113L357 1107L349 1097L344 1082L335 1084L335 1071L345 1071L346 1066L339 1051L326 1042L332 1034L357 1029L358 1007L321 998L318 991L310 993L296 991L286 986L283 970Z"/>
+            <path id="d-caldas" vector-effect="non-scaling-stroke" d="M426 1161L412 1169L401 1169L392 1179L380 1185L364 1187L356 1194L348 1194L343 1199L333 1195L323 1181L297 1177L297 1181L284 1181L278 1187L269 1189L243 1189L222 1178L220 1170L213 1165L209 1149L199 1154L190 1153L177 1160L173 1183L168 1190L172 1211L180 1225L187 1243L182 1255L174 1263L187 1287L193 1299L194 1313L191 1323L194 1332L193 1338L198 1355L190 1365L193 1382L185 1387L173 1385L157 1403L150 1407L153 1414L167 1424L184 1433L188 1442L193 1442L201 1452L202 1465L207 1474L215 1483L216 1494L225 1511L233 1522L231 1526L222 1530L214 1544L204 1576L197 1583L213 1582L241 1606L254 1613L265 1612L273 1608L273 1598L283 1599L297 1593L311 1597L325 1592L333 1592L346 1600L357 1622L367 1630L380 1631L383 1640L396 1642L399 1655L405 1647L423 1633L441 1624L433 1613L431 1602L437 1597L441 1568L448 1558L460 1553L475 1555L493 1537L500 1527L516 1513L528 1505L549 1496L551 1489L545 1479L546 1466L542 1456L538 1420L530 1413L518 1401L512 1391L509 1369L514 1356L511 1350L500 1341L497 1331L491 1322L495 1304L500 1293L506 1273L520 1262L523 1247L532 1233L542 1224L542 1212L532 1196L514 1185L502 1184L482 1175L467 1170L463 1167L449 1167Z"/>
+            <path id="d-laureles" vector-effect="non-scaling-stroke" d="M496 635L493 631L480 621L468 607L465 611L451 669L460 667L458 684L449 684L439 682L437 709L423 705L421 708L419 713L401 711L398 715L385 716L388 718L390 716L393 719L399 719L403 722L406 728L421 729L448 728L446 724L527 721L517 691L539 650L522 653L512 650L502 644Z"/>
+            <path id="d-belen" vector-effect="non-scaling-stroke" d="M527 721L446 724L448 728L421 729L406 728L403 722L398 719L397 723L402 728L403 730L401 733L396 732L395 732L395 734L392 732L385 731L382 732L380 730L377 732L373 731L370 733L369 733L366 736L370 735L375 736L380 735L386 738L394 740L395 742L392 742L393 744L390 750L393 752L398 752L389 755L393 760L390 762L391 763L393 763L396 766L402 767L404 766L405 763L408 763L410 759L412 759L412 766L414 768L412 768L414 773L413 774L412 772L410 774L408 772L406 774L408 776L406 778L408 781L407 782L404 781L405 782L403 785L406 788L409 788L410 790L404 796L414 796L417 799L420 797L426 801L429 801L430 804L435 804L436 805L434 804L430 806L428 809L430 812L428 815L432 820L430 821L431 823L416 829L418 830L420 829L421 830L426 829L422 832L421 835L422 836L426 839L426 842L423 843L420 841L414 841L412 843L410 842L409 843L412 843L417 846L419 848L423 850L425 854L427 854L426 853L429 851L433 852L437 863L440 864L443 862L450 862L453 864L453 862L449 856L451 853L450 853L451 852L455 851L451 847L454 847L457 844L455 838L455 828L455 826L459 827L465 823L468 830L467 826L478 769L478 759L480 757L482 752L484 750L508 750L509 744L529 747L531 750L534 751L533 740Z"/>
+            <path id="d-river" d="M319 1249C317 1220 297 1122 305 1077C313 1032 344 1016 369 977C394 938 429 890 454 845C479 800 500 760 518 709C536 658 549 595 561 542C573 489 564 429 589 392C614 355 661 344 714 320C767 296 876 261 909 249"/>
+            <g id="d-all">
+              <use href="#d-medellin"/><use href="#d-bello"/><use href="#d-copacabana"/><use href="#d-itagui"/><use href="#d-envigado"/><use href="#d-sabaneta"/><use href="#d-laestrella"/><use href="#d-caldas"/>
+            </g>
+            <clipPath id="cp">
+              <use href="#d-medellin"/><use href="#d-bello"/><use href="#d-copacabana"/><use href="#d-itagui"/><use href="#d-envigado"/><use href="#d-sabaneta"/><use href="#d-laestrella"/><use href="#d-caldas"/>
+            </clipPath>
+          </defs>
+              <g transform="translate(0 16) scale(1 0.55)"><use href="#d-all" fill="#0b0306"/></g>
+              <g transform="translate(0 14) scale(1 0.55)"><use href="#d-all" fill="#150509"/></g>
+              <g transform="translate(0 12) scale(1 0.55)"><use href="#d-all" fill="#1e060d"/></g>
+              <g transform="translate(0 10) scale(1 0.55)"><use href="#d-all" fill="#270710"/></g>
+              <g transform="translate(0 8) scale(1 0.55)"><use href="#d-all" fill="#300812"/></g>
+              <g transform="translate(0 6) scale(1 0.55)"><use href="#d-all" fill="#3a0915"/></g>
+              <g transform="translate(0 4) scale(1 0.55)"><use href="#d-all" fill="#450a19"/></g>
+              <g transform="translate(0 2) scale(1 0.55)"><use href="#d-all" fill="#520b1e" stroke="#8a1230" stroke-width="1"/></g>
+              <g transform="scale(1 0.55)">
+                <image href="assets/terreno.jpg" x="0" y="0" width="1000" height="1679.7" preserveAspectRatio="none" clip-path="url(#cp)"/>
+                <g clip-path="url(#cp)">
+                  <use href="#d-river" fill="none" stroke="#ff5470" stroke-opacity="0.55" stroke-width="9" stroke-linecap="round" stroke-linejoin="round" filter="url(#glow)"/>
+                  <use href="#d-river" fill="none" stroke="#ffffff" stroke-opacity="0.85" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/>
+                </g>
+                <use class="zone" data-zone="medellin" href="#d-medellin"/>
+                <use class="zone" data-zone="bello" href="#d-bello"/>
+                <use class="zone" data-zone="copacabana" href="#d-copacabana"/>
+                <use class="zone" data-zone="itagui" href="#d-itagui"/>
+                <use class="zone" data-zone="envigado" href="#d-envigado"/>
+                <use class="zone" data-zone="sabaneta" href="#d-sabaneta"/>
+                <use class="zone" data-zone="laestrella" href="#d-laestrella"/>
+                <use class="zone" data-zone="caldas" href="#d-caldas"/>
+                <use class="zone sub" data-zone="laureles" href="#d-laureles"/>
+                <use class="zone sub" data-zone="belen" href="#d-belen"/>
+              </g>
+            </svg>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Preguntas -->
+    <section class="wrap section tight" id="preguntas">
+      <div class="section-head">
+        <div class="eyebrow">Preguntas frecuentes</div>
+        <h2 class="title">Lo que más nos preguntan</h2>
+      </div>
+      <div class="faq">
+        <details><summary>¿Cuánto dura la garantía?</summary><p>Cada reparación tiene 4 meses de garantía. Si el problema vuelve en ese tiempo, nos escribes por WhatsApp y lo atendemos.</p></details>
+        <details><summary>Mi lavadora muestra un código de error, ¿qué hago?</summary><p>Apaga el equipo y escríbenos con el código (por ejemplo OE, UE o IE) y el modelo. Con eso agendamos la visita y el técnico revisa la causa.</p></details>
+        <details><summary>¿Cuánto cuesta la visita?</summary><p>La revisión cuesta $50.000. Los precios de los mantenimientos están en la sección de precios, y el valor de cada reparación se define después de la revisión.</p></details>
+        <details><summary>¿En qué zonas atienden?</summary><p>Atendemos en Medellín y sus alrededores. Mira la lista en la sección de cobertura; si no estás seguro de que llegamos a tu barrio, escríbenos y te lo confirmamos.</p></details>
+        <details><summary>¿Reparan otras marcas además de LG?</summary><p>[RESPUESTA: solo LG, o también otras marcas].</p></details>
+        <details><summary>¿Son el servicio oficial de LG?</summary><p>No. Somos un servicio técnico independiente, especializado en equipos LG y no afiliado a LG Electronics.</p></details>
+        <details><summary>¿Cómo agendo una visita?</summary><p>Escríbenos por WhatsApp, cuéntanos qué equipo es y qué falla tiene, y acordamos día y hora.</p></details>
+      </div>
+    </section>
+
+    <!-- Contacto -->
+    <section class="wrap section tight" id="contacto">
+      <div class="cta">
+        <div class="cta-copy">
+          <h2 class="title">Agenda tu visita hoy</h2>
+          <div>
+            <span>Cobertura: Medellín y sus alrededores</span>
+            <span>Horario: <span id="horario">[TU HORARIO]</span></span>
+            <span>WhatsApp: <span id="tel">[TU NÚMERO]</span></span>
+          </div>
+        </div>
+        <a class="btn btn-primary btn-lg" data-wa href="#contacto">Escribir por WhatsApp</a>
+      </div>
+    </section>
+  </main>
+
+  <footer class="footer">
+    <div class="brand">
+      <img src="assets/logo.jpg" alt="" width="56" height="56">
+      <span>Servi LG · Servicio técnico especializado</span>
+    </div>
+    <p>Servicio técnico independiente, no afiliado a LG Electronics. LG y su logotipo son marcas de sus respectivos propietarios.</p>
+  </footer>
+
+  <a class="fab" data-wa href="#contacto" aria-label="Escribir por WhatsApp">
+    <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 12a8.5 8.5 0 0 1-12.6 7.4L3 21l1.7-5.2A8.5 8.5 0 1 1 21 12z"/></svg>
+    <span>WhatsApp</span>
+  </a>
+</div>
+<script src="script.js"></script>
+</body>
+</html>
