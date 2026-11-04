@@ -46,7 +46,7 @@ button{font-family:inherit}
 .hero-copy{flex:1 1 400px;min-width:0;display:flex;flex-direction:column;gap:24px}
 .hero h1{margin:0;font-family:var(--display);font-style:italic;font-weight:800;font-size:clamp(48px,7.4vw,104px);line-height:.95;text-transform:uppercase}
 .hero h1 span{color:var(--accent)}
-.hero p{margin:0;max-width:520px;font-size:20px;line-height:1.5;color:var(--body)}
+.hero-copy>p{margin:0;max-width:520px;font-size:20px;line-height:1.5;color:var(--body)}
 .row{display:flex;flex-wrap:wrap;gap:12px}
 .badge{display:inline-flex;align-self:flex-start;align-items:center;gap:10px;padding:10px 18px;border-radius:999px;background:#1b1b1f;border:1px solid #3a3a42;font-size:16px;font-weight:600}
 .devices{display:flex;flex-wrap:wrap;gap:8px 20px;font-size:15px;color:var(--muted)}
@@ -162,18 +162,43 @@ button{font-family:inherit}
 .footer .brand{display:flex;align-items:center;gap:14px;font-size:15px;color:var(--body)}
 .footer img{width:56px;height:56px;object-fit:contain;border-radius:999px}
 .footer p{margin:0;max-width:520px;font-size:14px;line-height:1.5;color:var(--muted)}
-.fab{display:none;position:fixed;right:16px;bottom:16px;z-index:20;align-items:center;gap:10px;min-height:56px;padding:0 22px;border-radius:999px;background:var(--accent);color:#fff;font-size:17px;font-weight:600;text-decoration:none;box-shadow:0 10px 30px rgba(230,0,45,.45)}
+.fab{display:none;position:fixed;right:16px;bottom:16px;z-index:20;align-items:center;justify-content:center;gap:10px;min-height:56px;padding:0 22px;border-radius:999px;background:var(--accent);color:#fff;font-size:17px;font-weight:600;text-decoration:none;box-shadow:0 10px 30px rgba(230,0,45,.45);opacity:0;transform:translateY(12px);pointer-events:none;transition:opacity .25s,transform .25s}
+.fab.show{opacity:1;transform:none;pointer-events:auto}
 
 @media (max-width:640px){
   .wrap{padding-left:20px;padding-right:20px}
   .section{padding-top:56px;padding-bottom:56px}
-  .topbar{gap:8px 12px}
-  .nav{order:3;width:100%;flex-wrap:nowrap;overflow-x:auto;white-space:nowrap}
-  .lcd-code{font-size:52px;min-width:64px}
+  .topbar{gap:8px 12px;padding-top:12px;padding-bottom:4px}
+  .logo{width:64px;height:64px}
+  .topbar .btn{min-height:44px;padding:0 18px;font-size:15px}
+  .nav{order:3;width:100%;flex-wrap:nowrap;overflow-x:auto;white-space:nowrap;padding-right:32px;-webkit-mask-image:linear-gradient(90deg,#000 85%,transparent);mask-image:linear-gradient(90deg,#000 85%,transparent)}
+  .nav a{padding:10px 12px}
+
+  /* banner: título, lavadora a la vista y luego los botones */
+  .hero{flex-direction:column;flex-wrap:nowrap;align-items:stretch;gap:18px;padding-top:12px;padding-bottom:40px}
+  .hero-copy{display:contents}
+  .hero .eyebrow{order:1;font-size:12px;letter-spacing:.18em}
+  .hero h1{order:2;font-size:clamp(40px,13vw,56px)}
+  .hero-copy>p{order:3;font-size:17px;line-height:1.45}
+  .washer-col{order:4;flex:none}
+  .hero .row{order:5}
+  .hero .badge{order:6;font-size:15px}
+  .hero .devices{order:7}
+
+  .washer{padding:16px;gap:14px;border-radius:24px}
+  .lcd{padding:12px 14px;gap:10px}
+  .lcd-label{font-size:11px;letter-spacing:.14em}
+  .lcd-code{font-size:48px;min-width:56px}
+  .door{width:min(230px,72vw);margin:0 auto}
+  .hint{display:none}
+  .meaning{min-height:0;font-size:15px}
+  .washer .btn{min-height:48px}
+
   .price-card .price{font-size:36px}
   .cta{padding:24px}
   .zgrid{grid-template-columns:repeat(2,minmax(0,1fr))}
-  .fab{display:inline-flex}
+  .fab{display:inline-flex;width:56px;padding:0}
+  .fab span{display:none}
   .footer{padding-bottom:88px}
 }
 @media (prefers-reduced-motion:reduce){

@@ -30,6 +30,17 @@ const CONFIG = {
   if (hor && CONFIG.horario) hor.textContent = CONFIG.horario;
 })();
 
+/* ---------- Botón flotante de WhatsApp: aparece al salir del banner ---------- */
+(function () {
+  const fab = document.querySelector(".fab");
+  const hero = document.querySelector(".hero");
+  if (!fab) return;
+  if (!hero || !("IntersectionObserver" in window)) { fab.classList.add("show"); return; }
+  new IntersectionObserver(function (entries) {
+    fab.classList.toggle("show", !entries[0].isIntersecting);
+  }).observe(hero);
+})();
+
 /* ---------- Lavadora interactiva ---------- */
 (function () {
   const CODES = [
