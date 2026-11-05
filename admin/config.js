@@ -3,8 +3,8 @@
    ============================================================ */
 window.ADMIN_CONFIG = {
   // Supabase → Project Settings → API (la "anon public key" es pública por diseño)
-  supabaseUrl: "",
-  supabaseAnonKey: "",
+  supabaseUrl: "https://gzhdynphqyrfvpsmoahq.supabase.co",
+  supabaseAnonKey: "sb_publishable_u6BNQrHeCD016grCoSLN1w_6T5vAaB_",
 
   // Datos que salen en el encabezado de cada factura
   negocio: {
