@@ -107,15 +107,90 @@
     const row = document.createElement("div");
     row.className = "item";
     row.innerHTML =
-      '<label class="desc">Descripción<input data-k="desc" placeholder="Mano de obra, repuesto…"></label>' +
+      '<label class="desc">Descripción<input data-k="desc" list="cobros" placeholder="Escribe o elige de la lista"></label>' +
       '<label>Cant.<input data-k="cant" inputmode="numeric" value="1"></label>' +
       '<label>Valor unitario<input data-k="valor" inputmode="numeric" placeholder="0"></label>' +
       '<button type="button" class="rm" aria-label="Quitar ítem">×</button>';
     if (d.desc) $('[data-k="desc"]', row).value = d.desc;
+    if (d.valor) $('[data-k="valor"]', row).value = d.valor.toLocaleString("es-CO");
+    $('[data-k="desc"]', row).addEventListener("change", (e) => {
+      const hit = (C.cobros || []).find((c) => c.desc.toLowerCase() === e.target.value.trim().toLowerCase());
+      const val = $('[data-k="valor"]', row);
+      if (hit && hit.valor && !num(val.value)) { val.value = hit.valor.toLocaleString("es-CO"); calc(); }
+    });
     $(".rm", row).addEventListener("click", () => { row.remove(); if (!$(".item")) addItem(); calc(); });
     $('[data-k="valor"]', row).addEventListener("blur", (e) => { const v = num(e.target.value); e.target.value = v ? v.toLocaleString("es-CO") : ""; });
     $("#items").appendChild(row);
   }
+  /* catálogos */
+  const fillList = (id, arr) => { const dl = $("#" + id); arr.forEach((t) => { const o = document.createElement("option"); o.value = t; dl.appendChild(o); }); };
+  fillList("marcas", C.marcas || []);
+  fillList("cobros", (C.cobros || []).map((c) => c.desc));
+
+  /* técnicos */
+  const initials = (n) => n.split(/\s+/).filter(Boolean).slice(0, 2).map((w) => w[0]).join("").toUpperCase();
+  let tecnico = "";
+  function renderTechs() {
+    const box = $("#tecnicos");
+    box.textContent = "";
+    (C.tecnicos || []).forEach((t) => {
+      const b = document.createElement("button");
+      b.type = "button"; b.className = "tech"; b.setAttribute("role", "radio");
+      b.innerHTML = '<span class="ph"><span class="ini"></span><img alt=""></span><span class="nm"></span>';
+      $(".ini", b).textContent = initials(t.nombre);
+      const img = $("img", b);
+      img.onerror = () => img.remove();
+      img.src = t.foto;
+      $(".nm", b).textContent = t.nombre;
+      b.addEventListener("click", () => { tecnico = tecnico === t.nombre ? "" : t.nombre; syncTechs(); });
+      box.appendChild(b);
+    });
+    syncTechs();
+  }
+  function syncTechs() {
+    $$("#tecnicos .tech").forEach((b) => {
+      const on = $(".nm", b).textContent === tecnico;
+      b.classList.toggle("on", on); b.setAttribute("aria-checked", on);
+    });
+  }
+  renderTechs();
+
+  /* fallas y trabajos comunes */
+  function parts(text) { return String(text || "").split(/\.\s*|\n+/).map((x) => x.trim()).filter(Boolean); }
+  function renderChips() {
+    const eq = form.equipo.value;
+    [["falla", C.fallas], ["trabajo", C.trabajos]].forEach(([k, src]) => {
+      const box = $('.chips[data-for="' + k + '"]');
+      box.textContent = "";
+      ((src || {})[eq] || []).forEach((txt) => {
+        const c = document.createElement("button");
+        c.type = "button"; c.className = "chip"; c.textContent = txt;
+        c.addEventListener("click", () => {
+          const ta = form[k];
+          const list = parts(ta.value);
+          const i = list.findIndex((x) => x.toLowerCase() === txt.toLowerCase());
+          if (i >= 0) list.splice(i, 1); else list.push(txt);
+          ta.value = list.length ? list.join(". ") + "." : "";
+          syncChips();
+        });
+        box.appendChild(c);
+      });
+    });
+    syncChips();
+  }
+  function syncChips() {
+    ["falla", "trabajo"].forEach((k) => {
+      const have = parts(form[k].value).map((x) => x.toLowerCase());
+      $$('.chips[data-for="' + k + '"] .chip').forEach((c) => {
+        const on = have.includes(c.textContent.toLowerCase());
+        c.classList.toggle("on", on); c.setAttribute("aria-pressed", on);
+      });
+    });
+  }
+  form.equipo.addEventListener("change", renderChips);
+  form.falla.addEventListener("input", syncChips);
+  form.trabajo.addEventListener("input", syncChips);
+
   function readItems() {
     return $$(".item").map((r) => ({
       desc: $('[data-k="desc"]', r).value.trim(),
@@ -136,6 +211,7 @@
     form.reset();
     $("#items").textContent = "";
     addItem({ desc: "Mano de obra" });
+    tecnico = ""; syncTechs(); renderChips();
     form.garantia_meses.value = C.garantiaMeses || 4;
     $("#form-msg").textContent = "";
     calc();
@@ -153,7 +229,7 @@
     const v = (k) => (form[k].value || "").trim() || null;
     const row = {
       cliente_nombre: v("cliente_nombre"), cliente_telefono: v("cliente_telefono"),
-      cliente_documento: v("cliente_documento"), cliente_direccion: v("cliente_direccion"),
+      cliente_direccion: v("cliente_direccion"), tecnico: tecnico || null,
       equipo: v("equipo"), marca: v("marca"), modelo: v("modelo"), serial: v("serial"),
       falla: v("falla"), trabajo: v("trabajo"), items: t.items,
       subtotal: t.sub, descuento: t.desc, total: t.total,
@@ -245,6 +321,11 @@
     if (!logoP) logoP = new Promise((res) => { const i = new Image(); i.onload = () => res(i); i.onerror = () => res(null); i.src = "../assets/logo.jpg"; });
     return logoP;
   }
+  const imgCache = {};
+  function loadImg(src) {
+    if (!imgCache[src]) imgCache[src] = new Promise((res) => { const i = new Image(); i.onload = () => res(i); i.onerror = () => res(null); i.src = src; });
+    return imgCache[src];
+  }
   function wrap(ctx, text, maxW) {
     const out = [];
     String(text || "").split(/\n/).forEach((para) => {
@@ -306,12 +387,37 @@
     const col = (W - P * 2 - 40) / 2, cx2 = P + col + 40;
     label("Cliente", P, y); label("Equipo", cx2, y);
     y += 36;
-    const cli = [f.cliente_nombre, f.cliente_documento && "Doc. " + f.cliente_documento, f.cliente_telefono && "Tel. " + f.cliente_telefono, f.cliente_direccion].filter(Boolean);
+    const cli = [f.cliente_nombre, f.cliente_telefono && "Tel. " + f.cliente_telefono, f.cliente_direccion].filter(Boolean);
     const eq = [[f.equipo, f.marca].filter(Boolean).join(" "), f.modelo && "Modelo " + f.modelo, f.serial && "Serial " + f.serial].filter(Boolean);
     let hy1 = 0, hy2 = 0;
     cli.forEach((t, i) => { hy1 += para(t, P, y + hy1, col, i === 0 ? 26 : 22); });
     eq.forEach((t, i) => { hy2 += para(t, cx2, y + hy2, col, i === 0 ? 26 : 22); });
     y += Math.max(hy1, hy2, 32) + 28;
+
+    // Técnico
+    if (f.tecnico) {
+      const t = (C.tecnicos || []).find((x) => x.nombre === f.tecnico);
+      const ph = t ? await loadImg(t.foto) : null;
+      x.fillStyle = LINE; x.fillRect(P, y - 10, W - P * 2, 2);
+      y += 24;
+      const r = 48, cx = P + r, cy = y + r;
+      x.save(); x.beginPath(); x.arc(cx, cy, r, 0, Math.PI * 2); x.closePath();
+      if (ph) {
+        x.clip();
+        const sz = Math.min(ph.naturalWidth, ph.naturalHeight);
+        x.drawImage(ph, (ph.naturalWidth - sz) / 2, (ph.naturalHeight - sz) / 2, sz, sz, cx - r, cy - r, r * 2, r * 2);
+      } else {
+        x.fillStyle = "#0a0a0b"; x.fill();
+        x.fillStyle = "#fff"; x.font = font(800, 36, true); x.textAlign = "center";
+        x.fillText(f.tecnico.split(/\s+/).slice(0, 2).map((w) => w[0]).join("").toUpperCase(), cx, cy + 13);
+        x.textAlign = "left";
+      }
+      x.restore();
+      x.strokeStyle = RED; x.lineWidth = 4; x.beginPath(); x.arc(cx, cy, r + 2, 0, Math.PI * 2); x.stroke();
+      label("Técnico que atendió", P + r * 2 + 28, y + 38);
+      x.fillStyle = INK; x.font = font(600, 28); x.fillText(f.tecnico, P + r * 2 + 28, y + 76);
+      y += r * 2 + 44;
+    }
 
     [["Falla reportada", f.falla], ["Trabajo realizado", f.trabajo]].forEach(([t, v]) => {
       if (!v) return;

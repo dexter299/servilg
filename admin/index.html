@@ -10,7 +10,7 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:ital,wght@1,700;1,800&family=Barlow:wght@400;500;600;700&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="admin.css?v=1793903327">
+<link rel="stylesheet" href="admin.css?v=1793904541">
 </head>
 <body>
 
@@ -65,9 +65,13 @@
           <div class="grid">
             <label>Nombre *<input name="cliente_nombre" required></label>
             <label>WhatsApp<input name="cliente_telefono" inputmode="tel" placeholder="300 123 4567"></label>
-            <label>Cédula / NIT<input name="cliente_documento"></label>
-            <label>Dirección<input name="cliente_direccion"></label>
+            <label class="span2">Dirección<input name="cliente_direccion"></label>
           </div>
+        </fieldset>
+
+        <fieldset>
+          <legend>Técnico</legend>
+          <div id="tecnicos" class="techs" role="radiogroup" aria-label="Técnico que atendió"></div>
         </fieldset>
 
         <fieldset>
@@ -79,17 +83,28 @@
                 <option>Lavasecadora</option><option>Microondas</option><option>Otro</option>
               </select>
             </label>
-            <label>Marca<input name="marca" value="LG"></label>
-            <label>Modelo<input name="modelo"></label>
-            <label>Serial<input name="serial"></label>
+            <label>Marca<input name="marca" list="marcas" value="LG" placeholder="Escribe o elige"></label>
+            <label><span>Modelo <span class="opt">(opcional)</span></span><input name="modelo"></label>
+            <label><span>Serial <span class="opt">(opcional)</span></span><input name="serial"></label>
           </div>
-          <label>Falla reportada<textarea name="falla" rows="2"></textarea></label>
-          <label>Trabajo realizado<textarea name="trabajo" rows="3"></textarea></label>
+          <datalist id="marcas"></datalist>
+
+          <div class="pick">
+            <span class="pick-title">Falla reportada <small>toca las que apliquen o escribe</small></span>
+            <div class="chips" data-for="falla"></div>
+            <textarea name="falla" rows="2"></textarea>
+          </div>
+          <div class="pick">
+            <span class="pick-title">Trabajo realizado <small>toca los que apliquen o escribe</small></span>
+            <div class="chips" data-for="trabajo"></div>
+            <textarea name="trabajo" rows="3"></textarea>
+          </div>
         </fieldset>
 
         <fieldset>
           <legend>Cobro</legend>
           <div id="items" class="items"></div>
+          <datalist id="cobros"></datalist>
           <button id="add-item" type="button" class="btn btn-ghost btn-sm">+ Agregar ítem</button>
           <div class="grid totals-grid">
             <label>Descuento<input name="descuento" inputmode="numeric" value="0"></label>
@@ -134,7 +149,7 @@
 </div>
 
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-<script src="config.js?v=1793903327"></script>
-<script src="admin.js?v=1793903327"></script>
+<script src="config.js?v=1793904541"></script>
+<script src="admin.js?v=1793904541"></script>
 </body>
 </html>

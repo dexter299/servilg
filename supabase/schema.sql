@@ -41,6 +41,7 @@ create table if not exists public.facturas (
   metodo_pago text,
   garantia_meses int not null default 4,
   notas text,
+  tecnico text,
   creado_por text default lower(auth.jwt() ->> 'email')
 );
 alter table public.facturas enable row level security;
@@ -76,12 +77,12 @@ begin
   if coalesce(trim(p->>'cliente_nombre'), '') = '' then raise exception 'falta el nombre del cliente'; end if;
   insert into public.facturas (cliente_nombre, cliente_telefono, cliente_documento, cliente_direccion,
     equipo, marca, modelo, serial, falla, trabajo, items, subtotal, descuento, total,
-    metodo_pago, garantia_meses, notas, creado_por)
+    metodo_pago, garantia_meses, notas, tecnico, creado_por)
   values (p->>'cliente_nombre', p->>'cliente_telefono', p->>'cliente_documento', p->>'cliente_direccion',
     p->>'equipo', p->>'marca', p->>'modelo', p->>'serial', p->>'falla', p->>'trabajo',
     coalesce(p->'items', '[]'::jsonb), coalesce((p->>'subtotal')::numeric, 0), coalesce((p->>'descuento')::numeric, 0),
     coalesce((p->>'total')::numeric, 0), p->>'metodo_pago', coalesce((p->>'garantia_meses')::int, 4), p->>'notas',
-    lower(trim(p_email)))
+    p->>'tecnico', lower(trim(p_email)))
   returning * into r;
   return r;
 end $$;
@@ -95,3 +96,6 @@ end $$;
 
 grant execute on function public.admin_ok(text), public.facturas_listar(text),
   public.facturas_crear(text, jsonb), public.facturas_eliminar(text, uuid) to anon, authenticated;
+
+-- 5) Técnico que atendió
+alter table public.facturas add column if not exists tecnico text;
