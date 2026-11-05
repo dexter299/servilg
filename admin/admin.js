@@ -22,55 +22,44 @@
   if (!C.supabaseUrl || !C.supabaseAnonKey || !window.supabase) { show("view-setup"); return; }
   const sb = window.supabase.createClient(C.supabaseUrl, C.supabaseAnonKey);
 
-  /* ---------- Sesión ---------- */
-  let booted = false;
-  async function onSession(session) {
-    if (!session) {
-      booted = false;
-      $("#login-form").hidden = false; $("#code-form").hidden = true;
-      show("view-login"); return;
-    }
-    if (booted) return;
-    const { data, error } = await sb.from("admins").select("email").maybeSingle();
-    if (error || !data) {
-      await sb.auth.signOut();
-      $("#login-msg").textContent = "Esta cuenta no tiene acceso al panel.";
-      show("view-login");
-      return;
-    }
-    booted = true;
-    show("view-app");
-    panel("list");
-    loadList();
+  /* ---------- Acceso (temporal: solo con el correo) ---------- */
+  const KEY = "servilg_admin";
+  const store = {
+    get() { try { return localStorage.getItem(KEY) || ""; } catch (_) { return ""; } },
+    set(v) { try { v ? localStorage.setItem(KEY, v) : localStorage.removeItem(KEY); } catch (_) {} }
+  };
+  let adminEmail = "";
+  async function isAdmin(email) {
+    const { data, error } = await sb.rpc("admin_ok", { p_email: email });
+    return !error && data === true;
   }
-  sb.auth.getSession().then(({ data }) => onSession(data.session));
-  sb.auth.onAuthStateChange((_e, session) => { setTimeout(() => onSession(session), 0); });
+  function enter(email) {
+    adminEmail = email; store.set(email);
+    show("view-app"); panel("list"); loadList();
+  }
+  function logout() {
+    adminEmail = ""; store.set("");
+    $("#login-form").reset(); show("view-login");
+  }
+  (async function boot() {
+    const saved = store.get();
+    if (saved && await isAdmin(saved)) { enter(saved); return; }
+    store.set(""); show("view-login");
+  })();
 
-  const loginForm = $("#login-form"), codeForm = $("#code-form");
-  let loginEmail = "";
+  const loginForm = $("#login-form");
   loginForm.addEventListener("submit", async (e) => {
     e.preventDefault();
     const btn = $("button", loginForm);
     $("#login-msg").textContent = "";
-    loginEmail = loginForm.email.value.trim().toLowerCase();
+    const email = loginForm.email.value.trim().toLowerCase();
     btn.disabled = true;
-    const { error } = await sb.auth.signInWithOtp({
-      email: loginEmail,
-      options: { shouldCreateUser: false, emailRedirectTo: location.origin + location.pathname }
-    });
+    const ok = await isAdmin(email);
     btn.disabled = false;
-    if (error) {
-      $("#login-msg").textContent = /rate|seconds/i.test(error.message)
-        ? "Espera un momento antes de pedir otro código."
-        : "Este correo no tiene acceso al panel.";
-      return;
-    }
-    $("#code-email").textContent = loginEmail;
-    loginForm.hidden = true; codeForm.hidden = false;
+    if (!ok) { $("#login-msg").textContent = "Este correo no tiene acceso al panel."; return; }
+    enter(email);
   });
-  codeForm.addEventListener("submit", (e) => e.preventDefault());
-  $("#code-back").addEventListener("click", () => { codeForm.hidden = true; loginForm.hidden = false; });
-  $("#logout").addEventListener("click", () => sb.auth.signOut());
+  $("#logout").addEventListener("click", logout);
 
   $$("[data-go]").forEach((b) => b.addEventListener("click", () => {
     const to = b.dataset.go;
@@ -83,7 +72,7 @@
   let all = [];
   async function loadList() {
     $("#list-msg").textContent = "Cargando…";
-    const { data, error } = await sb.from("facturas").select("*").order("numero", { ascending: false }).limit(500);
+    const { data, error } = await sb.rpc("facturas_listar", { p_email: adminEmail });
     if (error) { $("#list-msg").textContent = "No se pudieron cargar las facturas."; return; }
     all = data || [];
     renderList();
@@ -173,7 +162,7 @@
     };
     const btn = $('button[type="submit"]', form);
     btn.disabled = true; btn.textContent = "Guardando…";
-    const { data, error } = await sb.from("facturas").insert(row).select().single();
+    const { data, error } = await sb.rpc("facturas_crear", { p_email: adminEmail, p: row });
     btn.disabled = false; btn.textContent = "Guardar y generar imagen";
     if (error) { msg.textContent = "No se pudo guardar: " + error.message; return; }
     all.unshift(data);
@@ -244,7 +233,7 @@
       return;
     }
     b.dataset.armed = "";
-    const { error } = await sb.from("facturas").delete().eq("id", current.id);
+    const { error } = await sb.rpc("facturas_eliminar", { p_email: adminEmail, p_id: current.id });
     if (error) { note("No se pudo eliminar."); return; }
     all = all.filter((f) => f.id !== current.id);
     panel("list"); renderList();

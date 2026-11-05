@@ -53,3 +53,45 @@ create policy "solo admins" on public.facturas
 
 -- 3) Registra aquí el correo del administrador (en minúsculas):
 -- insert into public.admins (email) values ('correo@ejemplo.com');
+
+-- 4) ACCESO TEMPORAL SOLO CON CORREO (sin contraseña ni enlace).
+-- Cualquiera que conozca el correo de un admin puede usar el panel.
+create or replace function public.admin_ok(p_email text)
+returns boolean language sql stable security definer set search_path = public as $$
+  select exists (select 1 from public.admins where email = lower(trim(p_email)));
+$$;
+
+create or replace function public.facturas_listar(p_email text)
+returns setof public.facturas language plpgsql stable security definer set search_path = public as $$
+begin
+  if not public.admin_ok(p_email) then raise exception 'sin acceso'; end if;
+  return query select * from public.facturas order by numero desc limit 500;
+end $$;
+
+create or replace function public.facturas_crear(p_email text, p jsonb)
+returns public.facturas language plpgsql security definer set search_path = public as $$
+declare r public.facturas;
+begin
+  if not public.admin_ok(p_email) then raise exception 'sin acceso'; end if;
+  if coalesce(trim(p->>'cliente_nombre'), '') = '' then raise exception 'falta el nombre del cliente'; end if;
+  insert into public.facturas (cliente_nombre, cliente_telefono, cliente_documento, cliente_direccion,
+    equipo, marca, modelo, serial, falla, trabajo, items, subtotal, descuento, total,
+    metodo_pago, garantia_meses, notas, creado_por)
+  values (p->>'cliente_nombre', p->>'cliente_telefono', p->>'cliente_documento', p->>'cliente_direccion',
+    p->>'equipo', p->>'marca', p->>'modelo', p->>'serial', p->>'falla', p->>'trabajo',
+    coalesce(p->'items', '[]'::jsonb), coalesce((p->>'subtotal')::numeric, 0), coalesce((p->>'descuento')::numeric, 0),
+    coalesce((p->>'total')::numeric, 0), p->>'metodo_pago', coalesce((p->>'garantia_meses')::int, 4), p->>'notas',
+    lower(trim(p_email)))
+  returning * into r;
+  return r;
+end $$;
+
+create or replace function public.facturas_eliminar(p_email text, p_id uuid)
+returns void language plpgsql security definer set search_path = public as $$
+begin
+  if not public.admin_ok(p_email) then raise exception 'sin acceso'; end if;
+  delete from public.facturas where id = p_id;
+end $$;
+
+grant execute on function public.admin_ok(text), public.facturas_listar(text),
+  public.facturas_crear(text, jsonb), public.facturas_eliminar(text, uuid) to anon, authenticated;
