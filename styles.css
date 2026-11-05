@@ -40,6 +40,11 @@ button{font-family:inherit}
 .nav{display:flex;flex-wrap:wrap;align-items:center;gap:4px 8px}
 .nav a{padding:12px 14px;color:#e4e4e7;font-size:16px;font-weight:500;text-decoration:none}
 .nav a:hover{color:#fff}
+.top-actions{display:flex;align-items:center;gap:8px}
+.login-link{display:inline-flex;align-items:center;gap:8px;min-height:48px;padding:0 14px;border-radius:999px;color:#a1a1aa;font-size:16px;font-weight:500;text-decoration:none}
+.login-link:hover{color:#fff;background:#1b1b1f}
+.login-link:focus-visible{outline:3px solid #fff;outline-offset:3px}
+@media (max-width:560px){.login-link span{display:none}.login-link{padding:0 12px}}
 
 /* banner */
 .hero{display:flex;flex-wrap:wrap;align-items:center;justify-content:center;gap:48px;padding-top:24px;padding-bottom:56px}
