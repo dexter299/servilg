@@ -1,0 +1,141 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex, nofollow">
+<title>Panel · Servi LG</title>
+<meta name="theme-color" content="#0a0a0b">
+<link rel="icon" href="../assets/logo.jpg">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:ital,wght@1,700;1,800&family=Barlow:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="admin.css">
+</head>
+<body>
+
+<!-- Falta configurar -->
+<section id="view-setup" class="center" hidden>
+  <div class="card narrow">
+    <img class="logo" src="../assets/logo.jpg" alt="Servi LG" width="72" height="72">
+    <h1>Panel sin conectar</h1>
+    <p class="muted">Falta poner la URL y la llave de Supabase en <code>admin/config.js</code>.</p>
+  </div>
+</section>
+
+<!-- Login -->
+<section id="view-login" class="center" hidden>
+  <form id="login-form" class="card narrow" autocomplete="on">
+    <img class="logo" src="../assets/logo.jpg" alt="Servi LG" width="72" height="72">
+    <h1>Panel administrativo</h1>
+    <label>Correo<input type="email" name="email" required autocomplete="username"></label>
+    <label>Contraseña<input type="password" name="password" required autocomplete="current-password"></label>
+    <button class="btn btn-primary" type="submit">Entrar</button>
+    <p id="login-msg" class="msg" role="alert"></p>
+  </form>
+</section>
+
+<!-- App -->
+<div id="view-app" hidden>
+  <header class="bar">
+    <div class="brand"><img src="../assets/logo.jpg" alt="" width="40" height="40"><span>Panel</span></div>
+    <nav class="tabs">
+      <button type="button" data-go="list">Facturas</button>
+      <button type="button" data-go="form" class="accent">+ Nueva</button>
+    </nav>
+    <button id="logout" type="button" class="link">Salir</button>
+  </header>
+
+  <main class="wrap">
+    <!-- Lista -->
+    <section id="list" class="panel">
+      <div class="list-head">
+        <h2>Facturas</h2>
+        <input id="search" type="search" placeholder="Buscar cliente, número o equipo">
+      </div>
+      <p id="list-msg" class="muted"></p>
+      <ul id="list-items" class="invoices"></ul>
+    </section>
+
+    <!-- Nueva factura -->
+    <section id="form" class="panel" hidden>
+      <h2>Nueva factura</h2>
+      <form id="inv-form" novalidate>
+        <fieldset>
+          <legend>Cliente</legend>
+          <div class="grid">
+            <label>Nombre *<input name="cliente_nombre" required></label>
+            <label>WhatsApp<input name="cliente_telefono" inputmode="tel" placeholder="300 123 4567"></label>
+            <label>Cédula / NIT<input name="cliente_documento"></label>
+            <label>Dirección<input name="cliente_direccion"></label>
+          </div>
+        </fieldset>
+
+        <fieldset>
+          <legend>Equipo</legend>
+          <div class="grid">
+            <label>Tipo
+              <select name="equipo">
+                <option>Lavadora</option><option>Nevera</option><option>Secadora</option>
+                <option>Lavasecadora</option><option>Microondas</option><option>Otro</option>
+              </select>
+            </label>
+            <label>Marca<input name="marca" value="LG"></label>
+            <label>Modelo<input name="modelo"></label>
+            <label>Serial<input name="serial"></label>
+          </div>
+          <label>Falla reportada<textarea name="falla" rows="2"></textarea></label>
+          <label>Trabajo realizado<textarea name="trabajo" rows="3"></textarea></label>
+        </fieldset>
+
+        <fieldset>
+          <legend>Cobro</legend>
+          <div id="items" class="items"></div>
+          <button id="add-item" type="button" class="btn btn-ghost btn-sm">+ Agregar ítem</button>
+          <div class="grid totals-grid">
+            <label>Descuento<input name="descuento" inputmode="numeric" value="0"></label>
+            <label>Método de pago
+              <select name="metodo_pago">
+                <option>Efectivo</option><option>Transferencia</option><option>Nequi</option>
+                <option>Daviplata</option><option>Tarjeta</option><option>Pendiente</option>
+              </select>
+            </label>
+            <label>Garantía (meses)<input name="garantia_meses" inputmode="numeric"></label>
+          </div>
+          <div class="sum">
+            <div><span>Subtotal</span><b id="t-sub">$0</b></div>
+            <div><span>Descuento</span><b id="t-desc">$0</b></div>
+            <div class="grand"><span>Total</span><b id="t-total">$0</b></div>
+          </div>
+        </fieldset>
+
+        <label>Notas<textarea name="notas" rows="2"></textarea></label>
+        <p id="form-msg" class="msg" role="alert"></p>
+        <button class="btn btn-primary wide" type="submit">Guardar y generar imagen</button>
+      </form>
+    </section>
+
+    <!-- Detalle -->
+    <section id="detail" class="panel" hidden>
+      <div class="detail-head">
+        <button type="button" class="link" data-go="list">← Facturas</button>
+        <h2 id="d-title"></h2>
+      </div>
+      <div class="actions">
+        <button id="a-share" type="button" class="btn btn-primary">Enviar por WhatsApp</button>
+        <button id="a-copy" type="button" class="btn btn-ghost">Copiar imagen</button>
+        <button id="a-download" type="button" class="btn btn-ghost">Descargar</button>
+        <button id="a-chat" type="button" class="btn btn-ghost">Abrir chat del cliente</button>
+      </div>
+      <p id="d-msg" class="msg" role="status"></p>
+      <div class="preview"><img id="d-img" alt="Vista previa de la factura"></div>
+      <button id="a-delete" type="button" class="link danger">Eliminar factura</button>
+    </section>
+  </main>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="config.js"></script>
+<script src="admin.js"></script>
+</body>
+</html>
