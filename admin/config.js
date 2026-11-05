@@ -21,8 +21,8 @@ window.ADMIN_CONFIG = {
   // Técnicos. Sube la foto a assets/tecnicos/ con el nombre indicado (cuadrada, mínimo 300×300).
   // Si la foto no existe, sale un círculo con las iniciales.
   tecnicos: [
-    { nombre: "Julián Hernández", foto: "../assets/tecnicos/julian.jpg" },
-    { nombre: "Héctor López", foto: "../assets/tecnicos/hector.jpg" }
+    { nombre: "Julián Hernández", foto: "../assets/tecnicos/julian.jpg?v=2" },
+    { nombre: "Héctor López", foto: "../assets/tecnicos/hector.jpg?v=2" }
   ],
 
   marcas: ["LG", "Samsung", "Whirlpool", "Mabe", "Haceb", "Electrolux", "Challenger", "Kalley",
