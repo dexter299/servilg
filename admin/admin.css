@@ -105,3 +105,13 @@ legend{padding:0 8px;font-family:var(--display);font-style:italic;font-weight:80
 .chip{font:inherit;font-size:14px;font-weight:500;color:#e4e4e7;background:#1b1b1f;border:1px solid #3a3a42;border-radius:999px;padding:8px 14px;cursor:pointer}
 .chip:hover{border-color:#71717a}
 .chip.on{background:var(--accent);border-color:var(--accent);color:#fff}
+
+/* marca: combo */
+.combo{position:relative}
+.combo input{padding-right:48px}
+.combo-btn{position:absolute;top:0;right:0;width:46px;height:100%;border:0;background:none;color:var(--muted);font-size:18px;cursor:pointer}
+.combo-btn:hover{color:#fff}
+.combo-list{position:absolute;z-index:20;left:0;right:0;top:calc(100% + 6px);max-height:260px;overflow:auto;margin:0;padding:6px;list-style:none;background:#18181b;border:1px solid #3a3a42;border-radius:12px;box-shadow:0 12px 32px rgba(0,0,0,.5)}
+.combo-list li{padding:11px 12px;border-radius:8px;font-size:16px;font-weight:500;color:#e4e4e7;cursor:pointer}
+.combo-list li:hover,.combo-list li.act{background:#27272a;color:#fff}
+.combo-list li.sel{color:var(--accent-soft)}

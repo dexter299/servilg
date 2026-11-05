@@ -124,7 +124,46 @@
   }
   /* catálogos */
   const fillList = (id, arr) => { const dl = $("#" + id); arr.forEach((t) => { const o = document.createElement("option"); o.value = t; dl.appendChild(o); }); };
-  fillList("marcas", C.marcas || []);
+
+  /* marca: lista desplegable + texto libre */
+  (function () {
+    const inp = form.marca, list = $("#marcas-list"), btn = $(".combo-btn");
+    const brands = C.marcas || [];
+    let active = -1;
+    function render(showAll) {
+      const q = inp.value.trim().toLowerCase();
+      const items = showAll || !q ? brands : brands.filter((b) => b.toLowerCase().includes(q));
+      list.textContent = ""; active = -1;
+      items.forEach((b) => {
+        const li = document.createElement("li");
+        li.setAttribute("role", "option"); li.textContent = b;
+        if (b.toLowerCase() === q) li.classList.add("sel");
+        li.addEventListener("mousedown", (e) => { e.preventDefault(); pick(b); });
+        list.appendChild(li);
+      });
+      const open = items.length > 0;
+      list.hidden = !open; inp.setAttribute("aria-expanded", open);
+    }
+    function close() { list.hidden = true; inp.setAttribute("aria-expanded", "false"); }
+    function pick(b) { inp.value = b; close(); }
+    function move(d) {
+      const lis = $$("li", list); if (!lis.length) return;
+      active = (active + d + lis.length) % lis.length;
+      lis.forEach((li, i) => li.classList.toggle("act", i === active));
+      lis[active].scrollIntoView({ block: "nearest" });
+    }
+    inp.addEventListener("focus", () => { render(true); setTimeout(() => inp.select(), 0); });
+    inp.addEventListener("input", () => render(false));
+    inp.addEventListener("blur", () => setTimeout(close, 120));
+    inp.addEventListener("keydown", (e) => {
+      if (e.key === "ArrowDown") { e.preventDefault(); if (list.hidden) render(true); else move(1); }
+      else if (e.key === "ArrowUp") { e.preventDefault(); move(-1); }
+      else if (e.key === "Enter" && !list.hidden && active >= 0) { e.preventDefault(); pick($$("li", list)[active].textContent); }
+      else if (e.key === "Escape") close();
+    });
+    btn.addEventListener("mousedown", (e) => e.preventDefault());
+    btn.addEventListener("click", (e) => { e.preventDefault(); if (list.hidden) { inp.focus(); render(true); } else close(); });
+  })();
   fillList("cobros", (C.cobros || []).map((c) => c.desc));
 
   /* técnicos */
