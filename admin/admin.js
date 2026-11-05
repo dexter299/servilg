@@ -67,17 +67,8 @@
     }
     $("#code-email").textContent = loginEmail;
     loginForm.hidden = true; codeForm.hidden = false;
-    codeForm.code.value = ""; codeForm.code.focus();
   });
-  codeForm.addEventListener("submit", async (e) => {
-    e.preventDefault();
-    const btn = $('button[type="submit"]', codeForm);
-    $("#code-msg").textContent = "";
-    btn.disabled = true;
-    const { error } = await sb.auth.verifyOtp({ email: loginEmail, token: codeForm.code.value.replace(/\s/g, ""), type: "email" });
-    btn.disabled = false;
-    if (error) $("#code-msg").textContent = "Código incorrecto o vencido.";
-  });
+  codeForm.addEventListener("submit", (e) => e.preventDefault());
   $("#code-back").addEventListener("click", () => { codeForm.hidden = true; loginForm.hidden = false; });
   $("#logout").addEventListener("click", () => sb.auth.signOut());
 
