@@ -25,7 +25,11 @@
   /* ---------- Sesión ---------- */
   let booted = false;
   async function onSession(session) {
-    if (!session) { booted = false; show("view-login"); return; }
+    if (!session) {
+      booted = false;
+      $("#login-form").hidden = false; $("#code-form").hidden = true;
+      show("view-login"); return;
+    }
     if (booted) return;
     const { data, error } = await sb.from("admins").select("email").maybeSingle();
     if (error || !data) {
@@ -42,15 +46,39 @@
   sb.auth.getSession().then(({ data }) => onSession(data.session));
   sb.auth.onAuthStateChange((_e, session) => { setTimeout(() => onSession(session), 0); });
 
-  $("#login-form").addEventListener("submit", async (e) => {
+  const loginForm = $("#login-form"), codeForm = $("#code-form");
+  let loginEmail = "";
+  loginForm.addEventListener("submit", async (e) => {
     e.preventDefault();
-    const f = e.target, btn = $("button", f);
+    const btn = $("button", loginForm);
     $("#login-msg").textContent = "";
+    loginEmail = loginForm.email.value.trim().toLowerCase();
     btn.disabled = true;
-    const { error } = await sb.auth.signInWithPassword({ email: f.email.value.trim(), password: f.password.value });
+    const { error } = await sb.auth.signInWithOtp({
+      email: loginEmail,
+      options: { shouldCreateUser: false, emailRedirectTo: location.origin + location.pathname }
+    });
     btn.disabled = false;
-    if (error) $("#login-msg").textContent = "Correo o contraseña incorrectos.";
+    if (error) {
+      $("#login-msg").textContent = /rate|seconds/i.test(error.message)
+        ? "Espera un momento antes de pedir otro código."
+        : "Este correo no tiene acceso al panel.";
+      return;
+    }
+    $("#code-email").textContent = loginEmail;
+    loginForm.hidden = true; codeForm.hidden = false;
+    codeForm.code.value = ""; codeForm.code.focus();
   });
+  codeForm.addEventListener("submit", async (e) => {
+    e.preventDefault();
+    const btn = $('button[type="submit"]', codeForm);
+    $("#code-msg").textContent = "";
+    btn.disabled = true;
+    const { error } = await sb.auth.verifyOtp({ email: loginEmail, token: codeForm.code.value.replace(/\s/g, ""), type: "email" });
+    btn.disabled = false;
+    if (error) $("#code-msg").textContent = "Código incorrecto o vencido.";
+  });
+  $("#code-back").addEventListener("click", () => { codeForm.hidden = true; loginForm.hidden = false; });
   $("#logout").addEventListener("click", () => sb.auth.signOut());
 
   $$("[data-go]").forEach((b) => b.addEventListener("click", () => {
