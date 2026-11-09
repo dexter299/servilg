@@ -10,7 +10,7 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:ital,wght@1,700;1,800&family=Barlow:wght@400;500;600;700&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="admin.css?v=1794200113">
+<link rel="stylesheet" href="admin.css?v=1794200764">
 </head>
 <body>
 
@@ -29,8 +29,31 @@
     <img class="logo" src="../assets/logo.jpg" alt="Servi LG" width="72" height="72">
     <h1>Panel administrativo</h1>
     <label>Correo<input type="email" name="email" required autocomplete="username"></label>
+    <label>Contraseña<input type="password" name="password" required autocomplete="current-password"></label>
     <button class="btn btn-primary" type="submit">Entrar</button>
     <p id="login-msg" class="msg" role="alert"></p>
+    <button type="button" class="link" id="go-reset">¿Primera vez u olvidaste tu contraseña?</button>
+  </form>
+
+  <form id="reset-form" class="card narrow" hidden>
+    <img class="logo" src="../assets/logo.jpg" alt="Servi LG" width="72" height="72">
+    <h1>Crear contraseña</h1>
+    <p class="muted">Escribe tu correo y te enviamos un enlace. Ábrelo en este mismo equipo para crear tu contraseña.</p>
+    <label>Correo<input type="email" name="email" required autocomplete="username"></label>
+    <button class="btn btn-primary" type="submit">Enviarme el enlace</button>
+    <p id="reset-msg" class="msg" role="status"></p>
+    <button type="button" class="link" id="back-login">← Volver a entrar</button>
+  </form>
+
+  <form id="pass-form" class="card narrow" hidden>
+    <img class="logo" src="../assets/logo.jpg" alt="Servi LG" width="72" height="72">
+    <h1>Tu contraseña</h1>
+    <p class="muted">Mínimo 8 caracteres. La usarás junto con tu correo para entrar al panel.</p>
+    <input type="email" name="username" autocomplete="username" hidden>
+    <label>Nueva contraseña<input type="password" name="p1" minlength="8" required autocomplete="new-password"></label>
+    <label>Repítela<input type="password" name="p2" minlength="8" required autocomplete="new-password"></label>
+    <button class="btn btn-primary" type="submit">Guardar y entrar</button>
+    <p id="pass-msg" class="msg" role="alert"></p>
   </form>
 </section>
 
@@ -58,7 +81,10 @@
 
     <!-- Nueva factura -->
     <section id="form" class="panel" hidden>
-      <h2>Nueva factura</h2>
+      <div class="detail-head">
+        <button type="button" class="link" data-go="list">← Facturas</button>
+        <h2>Nueva factura</h2>
+      </div>
       <form id="inv-form" novalidate>
         <fieldset>
           <legend>Cliente</legend>
@@ -157,7 +183,7 @@
 </div>
 
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-<script src="config.js?v=1794200113"></script>
-<script src="admin.js?v=1794200113"></script>
+<script src="config.js?v=1794200764"></script>
+<script src="admin.js?v=1794200764"></script>
 </body>
 </html>

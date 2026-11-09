@@ -22,50 +22,97 @@
   if (!C.supabaseUrl || !C.supabaseAnonKey || !window.supabase) { show("view-setup"); return; }
   const sb = window.supabase.createClient(C.supabaseUrl, C.supabaseAnonKey);
 
-  /* ---------- Acceso (temporal: solo con el correo) ---------- */
-  const KEY = "servilg_admin";
-  const store = {
-    get() { try { return localStorage.getItem(KEY) || ""; } catch (_) { return ""; } },
-    set(v) { try { v ? localStorage.setItem(KEY, v) : localStorage.removeItem(KEY); } catch (_) {} }
-  };
-  let adminEmail = "";
-  async function isAdmin(email) {
-    const { data, error } = await sb.rpc("admin_ok", { p_email: email });
-    return !error && data === true;
+  /* ---------- Acceso con correo y contraseña ---------- */
+  const linkType = new URLSearchParams(location.hash.slice(1)).get("type");
+  let mustSetPassword = linkType === "recovery" || linkType === "invite";
+  let booted = false, adminEmail = "";
+  const loginForm = $("#login-form"), resetForm_ = $("#reset-form"), passForm = $("#pass-form");
+  function loginCard(which) {
+    loginForm.hidden = which !== "login"; resetForm_.hidden = which !== "reset"; passForm.hidden = which !== "pass";
+    show("view-login");
   }
-  function enter(email) {
-    adminEmail = email; store.set(email);
+  async function onSession(session) {
+    if (!session) { booted = false; loginCard("login"); return; }
+    const { data: ok } = await sb.rpc("es_admin");
+    if (ok !== true) {
+      await sb.auth.signOut();
+      $("#login-msg").textContent = "Esta cuenta no tiene acceso al panel.";
+      loginCard("login"); return;
+    }
+    adminEmail = session.user.email;
+    if (mustSetPassword) { passForm.username.value = adminEmail; loginCard("pass"); return; }
+    if (booted) return;
+    booted = true;
+    history.replaceState(null, "", location.pathname);
     show("view-app"); panel("list"); loadList();
   }
-  function logout() {
-    adminEmail = ""; store.set("");
-    $("#login-form").reset(); show("view-login");
-  }
-  (async function boot() {
-    const saved = store.get();
-    if (saved && await isAdmin(saved)) { enter(saved); return; }
-    store.set(""); show("view-login");
-  })();
+  sb.auth.onAuthStateChange((ev, session) => {
+    if (ev === "PASSWORD_RECOVERY") mustSetPassword = true;
+    setTimeout(() => onSession(session), 0);
+  });
 
-  const loginForm = $("#login-form");
   loginForm.addEventListener("submit", async (e) => {
     e.preventDefault();
-    const btn = $("button", loginForm);
+    const btn = $('button[type="submit"]', loginForm);
     $("#login-msg").textContent = "";
-    const email = loginForm.email.value.trim().toLowerCase();
     btn.disabled = true;
-    const ok = await isAdmin(email);
+    const { error } = await sb.auth.signInWithPassword({ email: loginForm.email.value.trim().toLowerCase(), password: loginForm.password.value });
     btn.disabled = false;
-    if (!ok) { $("#login-msg").textContent = "Este correo no tiene acceso al panel."; return; }
-    enter(email);
+    if (error) $("#login-msg").textContent = /confirm/i.test(error.message)
+      ? "Primero crea tu contraseña con el enlace de abajo."
+      : "Correo o contraseña incorrectos.";
   });
-  $("#logout").addEventListener("click", logout);
+  $("#go-reset").addEventListener("click", () => { resetForm_.email.value = loginForm.email.value; $("#reset-msg").textContent = ""; loginCard("reset"); });
+  $("#back-login").addEventListener("click", () => loginCard("login"));
+  resetForm_.addEventListener("submit", async (e) => {
+    e.preventDefault();
+    const btn = $('button[type="submit"]', resetForm_), msg = $("#reset-msg");
+    msg.className = "msg"; msg.textContent = "";
+    btn.disabled = true;
+    const { error } = await sb.auth.resetPasswordForEmail(resetForm_.email.value.trim().toLowerCase(), { redirectTo: location.origin + location.pathname });
+    btn.disabled = false;
+    if (error) { msg.textContent = /rate|seconds|after/i.test(error.message) ? "Ya enviamos un enlace hace poco. Espera unos minutos e intenta de nuevo." : "No se pudo enviar el enlace."; return; }
+    msg.className = "msg ok";
+    msg.textContent = "Listo. Revisa tu correo (también la carpeta de spam) y abre el enlace.";
+  });
+  passForm.addEventListener("submit", async (e) => {
+    e.preventDefault();
+    const msg = $("#pass-msg"), btn = $('button[type="submit"]', passForm);
+    msg.textContent = "";
+    if (passForm.p1.value.length < 8) { msg.textContent = "Debe tener al menos 8 caracteres."; return; }
+    if (passForm.p1.value !== passForm.p2.value) { msg.textContent = "Las contraseñas no coinciden."; return; }
+    btn.disabled = true;
+    const { error } = await sb.auth.updateUser({ password: passForm.p1.value });
+    btn.disabled = false;
+    if (error) { msg.textContent = /different|same/i.test(error.message) ? "Usa una contraseña distinta a la anterior." : "No se pudo guardar. Pide un enlace nuevo."; return; }
+    mustSetPassword = false; passForm.reset();
+    const { data } = await sb.auth.getSession();
+    onSession(data.session);
+  });
+  $("#logout").addEventListener("click", () => sb.auth.signOut());
+
+  /* ---------- Atrás del celular/navegador: vuelve a la lista ---------- */
+  function go(id) {
+    const st = history.state && history.state.v;
+    if (id === "list") {
+      if (st) { history.back(); return; }
+      panel("list"); loadList(); return;
+    }
+    if (st) history.replaceState({ v: id }, "", "#" + id);
+    else history.pushState({ v: id }, "", "#" + id);
+    panel(id);
+  }
+  window.addEventListener("popstate", (e) => {
+    if (!booted) return;
+    const v = e.state && e.state.v;
+    if (!v || (v === "detail" && !current)) { panel("list"); loadList(); }
+    else panel(v);
+  });
 
   $$("[data-go]").forEach((b) => b.addEventListener("click", () => {
     const to = b.dataset.go;
     if (to === "form") resetForm();
-    if (to === "list") loadList();
-    panel(to);
+    go(to);
   }));
 
   /* ---------- Lista ---------- */
@@ -294,7 +341,7 @@
     $("#d-img").removeAttribute("src");
     $("#a-delete").textContent = "Eliminar factura";
     $("#a-chat").hidden = !waPhone(f.cliente_telefono);
-    panel("detail");
+    go("detail");
     const canvas = await drawInvoice(f);
     currentBlob = await new Promise((r) => canvas.toBlob(r, "image/png"));
     $("#d-img").src = URL.createObjectURL(currentBlob);
@@ -352,7 +399,7 @@
     const { error } = await sb.rpc("facturas_eliminar", { p_email: adminEmail, p_id: current.id });
     if (error) { note("No se pudo eliminar."); return; }
     all = all.filter((f) => f.id !== current.id);
-    panel("list"); renderList();
+    go("list");
   });
 
   /* ---------- Imagen de la factura ---------- */

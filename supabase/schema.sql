@@ -99,3 +99,28 @@ grant execute on function public.admin_ok(text), public.facturas_listar(text),
 
 -- 5) Técnico que atendió
 alter table public.facturas add column if not exists tecnico text;
+
+-- 6) ACCESO CON CONTRASEÑA (reemplaza el acceso temporal solo con correo).
+-- Las funciones ya no confían en el correo que manda la página: exigen una sesión
+-- iniciada (correo + contraseña) de un administrador. p_email se ignora.
+create or replace function public.facturas_listar(p_email text)
+returns setof public.facturas language plpgsql stable security definer set search_path = public as $$
+begin
+  if not public.es_admin() then raise exception 'sin acceso'; end if;
+  return query select * from public.facturas order by numero desc limit 500;
+end $$;
+
+create or replace function public.facturas_eliminar(p_email text, p_id uuid)
+returns void language plpgsql security definer set search_path = public as $$
+begin
+  if not public.es_admin() then raise exception 'sin acceso'; end if;
+  delete from public.facturas where id = p_id;
+end $$;
+-- facturas_crear: igual que en numeracion.sql pero con "if not public.es_admin()" y
+-- creado_por = lower(auth.jwt() ->> 'email').
+
+revoke execute on function public.admin_ok(text), public.facturas_listar(text),
+  public.facturas_crear(text, jsonb), public.facturas_eliminar(text, uuid) from public, anon;
+grant execute on function public.facturas_listar(text), public.facturas_crear(text, jsonb),
+  public.facturas_eliminar(text, uuid) to authenticated;
+grant execute on function public.es_admin() to anon, authenticated;
