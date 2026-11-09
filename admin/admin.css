@@ -157,3 +157,10 @@ legend{float:left;width:100%;padding:0;margin:0 0 2px}
   .actions #a-share{flex-basis:100%}
 }
 #list-msg:empty{display:none}
+
+/* varios equipos */
+.equipos{display:flex;flex-direction:column;gap:18px}
+.equipo{display:flex;flex-direction:column;gap:14px}
+.equipo + .equipo{padding-top:18px;border-top:1px dashed #3a3a42}
+.equipo-head{display:flex;align-items:center;justify-content:space-between}
+.equipo-head b{font-family:var(--display);font-style:italic;font-weight:800;font-size:20px;text-transform:uppercase}

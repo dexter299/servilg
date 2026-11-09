@@ -124,3 +124,7 @@ revoke execute on function public.admin_ok(text), public.facturas_listar(text),
 grant execute on function public.facturas_listar(text), public.facturas_crear(text, jsonb),
   public.facturas_eliminar(text, uuid) to authenticated;
 grant execute on function public.es_admin() to anon, authenticated;
+
+-- 7) Varios equipos por factura
+alter table public.facturas add column if not exists equipos jsonb not null default '[]';
+-- facturas_crear guarda además coalesce(p->'equipos','[]') en la columna equipos.

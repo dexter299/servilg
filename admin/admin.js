@@ -138,7 +138,8 @@
       b.innerHTML = '<span class="inv-num"></span><span class="inv-main"><b></b><span></span></span><span class="inv-total"></span>';
       $(".inv-num", b).textContent = pad(f.numero);
       $(".inv-main b", b).textContent = f.cliente_nombre;
-      $(".inv-main span", b).textContent = fecha(f.created_at) + " · " + [f.equipo, f.modelo].filter(Boolean).join(" ");
+      const n = (f.equipos || []).length;
+      $(".inv-main span", b).textContent = fecha(f.created_at) + " · " + [f.equipo, f.modelo].filter(Boolean).join(" ") + (n > 1 ? " +" + (n - 1) : "");
       $(".inv-total", b).textContent = money(f.total);
       b.addEventListener("click", () => openDetail(f));
       li.appendChild(b);
@@ -172,47 +173,6 @@
   /* catálogos */
   const fillList = (id, arr) => { const dl = $("#" + id); arr.forEach((t) => { const o = document.createElement("option"); o.value = t; dl.appendChild(o); }); };
 
-  /* marca: lista desplegable + texto libre */
-  (function () {
-    const inp = form.marca, list = $("#marcas-list"), btn = $(".combo-btn");
-    const brands = C.marcas || [];
-    let active = -1;
-    function render(showAll) {
-      const q = inp.value.trim().toLowerCase();
-      const items = showAll || !q ? brands : brands.filter((b) => b.toLowerCase().includes(q));
-      list.textContent = ""; active = -1;
-      items.forEach((b) => {
-        const li = document.createElement("li");
-        li.setAttribute("role", "option"); li.textContent = b;
-        if (b.toLowerCase() === q) li.classList.add("sel");
-        li.addEventListener("mousedown", (e) => { e.preventDefault(); pick(b); });
-        list.appendChild(li);
-      });
-      const open = items.length > 0;
-      list.hidden = !open; inp.setAttribute("aria-expanded", open);
-    }
-    function close() { list.hidden = true; inp.setAttribute("aria-expanded", "false"); }
-    function pick(b) { inp.value = b; close(); }
-    function move(d) {
-      const lis = $$("li", list); if (!lis.length) return;
-      active = (active + d + lis.length) % lis.length;
-      lis.forEach((li, i) => li.classList.toggle("act", i === active));
-      lis[active].scrollIntoView({ block: "nearest" });
-    }
-    inp.addEventListener("focus", () => { render(true); setTimeout(() => inp.select(), 0); });
-    inp.addEventListener("input", () => render(false));
-    inp.addEventListener("blur", () => setTimeout(close, 120));
-    inp.addEventListener("keydown", (e) => {
-      if (e.key === "ArrowDown") { e.preventDefault(); if (list.hidden) render(true); else move(1); }
-      else if (e.key === "ArrowUp") { e.preventDefault(); move(-1); }
-      else if (e.key === "Enter" && !list.hidden && active >= 0) { e.preventDefault(); pick($$("li", list)[active].textContent); }
-      else if (e.key === "Escape") close();
-    });
-    btn.addEventListener("mousedown", (e) => e.preventDefault());
-    btn.addEventListener("click", (e) => { e.preventDefault(); if (list.hidden) { inp.focus(); render(true); } else close(); });
-  })();
-  fillList("cobros", (C.cobros || []).map((c) => c.desc));
-
   /* técnicos */
   const initials = (n) => n.split(/\s+/).filter(Boolean).slice(0, 2).map((w) => w[0]).join("").toUpperCase();
   let tecnico = "";
@@ -241,41 +201,111 @@
   }
   renderTechs();
 
-  /* fallas y trabajos comunes */
-  function parts(text) { return String(text || "").split(/\.\s*|\n+/).map((x) => x.trim()).filter(Boolean); }
-  function renderChips() {
-    const eq = form.equipo.value;
-    [["falla", C.fallas], ["trabajo", C.trabajos]].forEach(([k, src]) => {
-      const box = $('.chips[data-for="' + k + '"]');
-      box.textContent = "";
-      ((src || {})[eq] || []).forEach((txt) => {
-        const c = document.createElement("button");
-        c.type = "button"; c.className = "chip"; c.textContent = txt;
-        c.addEventListener("click", () => {
-          const ta = form[k];
-          const list = parts(ta.value);
-          const i = list.findIndex((x) => x.toLowerCase() === txt.toLowerCase());
-          if (i >= 0) list.splice(i, 1); else list.push(txt);
-          ta.value = list.length ? list.join(". ") + "." : "";
-          syncChips();
-        });
-        box.appendChild(c);
+  /* ---------- Equipos (uno o varios por factura) ---------- */
+  const parts = (text) => String(text || "").split(/\.\s*|\n+/).map((x) => x.trim()).filter(Boolean);
+  let eqSeq = 0;
+  function setupCombo(box) {
+    const inp = $("input", box), list = $(".combo-list", box), btn = $(".combo-btn", box);
+    const id = "marcas-" + (++eqSeq); list.id = id; inp.setAttribute("aria-controls", id);
+    const brands = C.marcas || [];
+    let active = -1;
+    function render(showAll) {
+      const q = inp.value.trim().toLowerCase();
+      const items = showAll || !q ? brands : brands.filter((b) => b.toLowerCase().includes(q));
+      list.textContent = ""; active = -1;
+      items.forEach((b) => {
+        const li = document.createElement("li");
+        li.setAttribute("role", "option"); li.textContent = b;
+        if (b.toLowerCase() === q) li.classList.add("sel");
+        li.addEventListener("mousedown", (e) => { e.preventDefault(); pick(b); });
+        list.appendChild(li);
       });
+      list.hidden = !items.length; inp.setAttribute("aria-expanded", !!items.length);
+    }
+    function close() { list.hidden = true; inp.setAttribute("aria-expanded", "false"); }
+    function pick(b) { inp.value = b; close(); }
+    function move(dir) {
+      const lis = $$("li", list); if (!lis.length) return;
+      active = (active + dir + lis.length) % lis.length;
+      lis.forEach((li, i) => li.classList.toggle("act", i === active));
+      lis[active].scrollIntoView({ block: "nearest" });
+    }
+    inp.addEventListener("focus", () => { render(true); setTimeout(() => inp.select(), 0); });
+    inp.addEventListener("input", () => render(false));
+    inp.addEventListener("blur", () => setTimeout(close, 120));
+    inp.addEventListener("keydown", (e) => {
+      if (e.key === "ArrowDown") { e.preventDefault(); if (list.hidden) render(true); else move(1); }
+      else if (e.key === "ArrowUp") { e.preventDefault(); move(-1); }
+      else if (e.key === "Enter" && !list.hidden && active >= 0) { e.preventDefault(); pick($$("li", list)[active].textContent); }
+      else if (e.key === "Escape") close();
     });
-    syncChips();
+    btn.addEventListener("mousedown", (e) => e.preventDefault());
+    btn.addEventListener("click", (e) => { e.preventDefault(); if (list.hidden) { inp.focus(); render(true); } else close(); });
   }
-  function syncChips() {
+  function syncChips(block) {
     ["falla", "trabajo"].forEach((k) => {
-      const have = parts(form[k].value).map((x) => x.toLowerCase());
-      $$('.chips[data-for="' + k + '"] .chip').forEach((c) => {
+      const have = parts($('[data-k="' + k + '"]', block).value).map((x) => x.toLowerCase());
+      $$('.chips[data-for="' + k + '"] .chip', block).forEach((c) => {
         const on = have.includes(c.textContent.toLowerCase());
         c.classList.toggle("on", on); c.setAttribute("aria-pressed", on);
       });
     });
   }
-  form.equipo.addEventListener("change", renderChips);
-  form.falla.addEventListener("input", syncChips);
-  form.trabajo.addEventListener("input", syncChips);
+  function renderChips(block) {
+    const eq = $('[data-k="equipo"]', block).value;
+    [["falla", C.fallas], ["trabajo", C.trabajos]].forEach(([k, src]) => {
+      const box = $('.chips[data-for="' + k + '"]', block), ta = $('[data-k="' + k + '"]', block);
+      box.textContent = "";
+      ((src || {})[eq] || []).forEach((txt) => {
+        const c = document.createElement("button");
+        c.type = "button"; c.className = "chip"; c.textContent = txt;
+        c.addEventListener("click", () => {
+          const list = parts(ta.value);
+          const i = list.findIndex((x) => x.toLowerCase() === txt.toLowerCase());
+          if (i >= 0) list.splice(i, 1); else list.push(txt);
+          ta.value = list.length ? list.join(". ") + "." : "";
+          syncChips(block);
+        });
+        box.appendChild(c);
+      });
+    });
+    syncChips(block);
+  }
+  function numberEquipos() {
+    const blocks = $$("#equipos .equipo");
+    blocks.forEach((bl, i) => {
+      $(".equipo-n", bl).textContent = "Equipo " + (i + 1);
+      $(".equipo-head", bl).hidden = blocks.length < 2;
+    });
+  }
+  function addEquipo() {
+    const block = $("#tpl-equipo").content.firstElementChild.cloneNode(true);
+    $("#equipos").appendChild(block);
+    setupCombo($(".combo", block));
+    const tipo = $('[data-k="equipo"]', block);
+    tipo.addEventListener("change", () => {
+      // al cambiar el tipo se borran la falla y el trabajo del tipo anterior
+      $('[data-k="falla"]', block).value = "";
+      $('[data-k="trabajo"]', block).value = "";
+      renderChips(block);
+    });
+    $('[data-k="falla"]', block).addEventListener("input", () => syncChips(block));
+    $('[data-k="trabajo"]', block).addEventListener("input", () => syncChips(block));
+    $(".eq-rm", block).addEventListener("click", () => { block.remove(); numberEquipos(); });
+    renderChips(block);
+    numberEquipos();
+    return block;
+  }
+  function readEquipos() {
+    return $$("#equipos .equipo").map((bl) => {
+      const g = (k) => ($('[data-k="' + k + '"]', bl).value || "").trim() || null;
+      return { equipo: g("equipo"), marca: g("marca"), modelo: g("modelo"), serial: g("serial"), falla: g("falla"), trabajo: g("trabajo") };
+    });
+  }
+  $("#add-equipo").addEventListener("click", () => {
+    const bl = addEquipo();
+    bl.scrollIntoView({ behavior: "smooth", block: "start" });
+  });
 
   function readItems() {
     return $$(".item").map((r) => ({
@@ -298,7 +328,8 @@
     form.reset();
     $("#items").textContent = "";
     addItem({ desc: "Mano de obra" });
-    tecnico = ""; syncTechs(); renderChips();
+    tecnico = ""; syncTechs();
+    $("#equipos").textContent = ""; addEquipo();
     form.garantia_meses.value = C.garantiaMeses || 4;
     $("#form-msg").textContent = "";
     calc();
@@ -314,11 +345,12 @@
     if (!form.cliente_nombre.value.trim()) { msg.textContent = "Falta el nombre del cliente."; form.cliente_nombre.focus(); return; }
     if (!t.items.length || t.sub <= 0) { msg.textContent = "Agrega al menos un ítem con valor."; return; }
     const v = (k) => (form[k].value || "").trim() || null;
+    const eqs = readEquipos();
     const row = {
       cliente_nombre: v("cliente_nombre"), cliente_telefono: v("cliente_telefono"),
       cliente_direccion: v("cliente_direccion"), tecnico: tecnico || null,
-      equipo: v("equipo"), marca: v("marca"), modelo: v("modelo"), serial: v("serial"),
-      falla: v("falla"), trabajo: v("trabajo"), items: t.items,
+      equipo: eqs[0].equipo, marca: eqs[0].marca, modelo: eqs[0].modelo, serial: eqs[0].serial,
+      falla: eqs[0].falla, trabajo: eqs[0].trabajo, equipos: eqs, items: t.items,
       subtotal: t.sub, descuento: t.desc, total: t.total,
       metodo_pago: v("metodo_pago"), garantia_meses: num(form.garantia_meses.value),
       notas: v("notas")
@@ -472,13 +504,18 @@
 
     // Cliente / Equipo
     const col = (W - P * 2 - 40) / 2, cx2 = P + col + 40;
-    label("Cliente", P, y); label("Equipo", cx2, y);
+    const eqs = (f.equipos && f.equipos.length) ? f.equipos
+      : [{ equipo: f.equipo, marca: f.marca, modelo: f.modelo, serial: f.serial, falla: f.falla, trabajo: f.trabajo }];
+    const multi = eqs.length > 1;
+    label("Cliente", P, y); label(multi ? "Equipos" : "Equipo", cx2, y);
     y += 36;
     const cli = [f.cliente_nombre, f.cliente_telefono && "Tel. " + f.cliente_telefono, f.cliente_direccion].filter(Boolean);
-    const eq = [[f.equipo, f.marca].filter(Boolean).join(" "), f.modelo && "Modelo " + f.modelo, f.serial && "Serial " + f.serial].filter(Boolean);
+    const eqName = (e) => [e.equipo, e.marca].filter(Boolean).join(" ");
+    const eq = multi ? eqs.map((e, i) => (i + 1) + ". " + eqName(e))
+      : [eqName(eqs[0]), eqs[0].modelo && "Modelo " + eqs[0].modelo, eqs[0].serial && "Serial " + eqs[0].serial].filter(Boolean);
     let hy1 = 0, hy2 = 0;
     cli.forEach((t, i) => { hy1 += para(t, P, y + hy1, col, i === 0 ? 26 : 22); });
-    eq.forEach((t, i) => { hy2 += para(t, cx2, y + hy2, col, i === 0 ? 26 : 22); });
+    eq.forEach((t, i) => { hy2 += para(t, cx2, y + hy2, col, (i === 0 || multi) ? 26 : 22); });
     y += Math.max(hy1, hy2, 32) + 28;
 
     // Técnico
@@ -506,11 +543,22 @@
       y += r * 2 + 44;
     }
 
-    [["Falla reportada", f.falla], ["Trabajo realizado", f.trabajo]].forEach(([t, v]) => {
-      if (!v) return;
-      x.fillStyle = LINE; x.fillRect(P, y - 10, W - P * 2, 2);
-      y += 34; label(t, P, y); y += 36;
-      y += para(v, P, y, W - P * 2) + 20;
+    eqs.forEach((e, i) => {
+      if (multi) {
+        x.fillStyle = "#0a0a0b"; x.fillRect(P, y, W - P * 2, 56);
+        x.fillStyle = "#fff"; x.font = font(800, 26, true);
+        x.fillText(((i + 1) + ". " + eqName(e)).toUpperCase(), P + 20, y + 37);
+        const det = [e.modelo && "Modelo " + e.modelo, e.serial && "Serial " + e.serial].filter(Boolean).join("  ·  ");
+        if (det) { x.textAlign = "right"; x.fillStyle = "#d4d4d8"; x.font = font(500, 18); x.fillText(det, W - P - 20, y + 35); x.textAlign = "left"; }
+        y += 76;
+      }
+      [["Falla reportada", e.falla], ["Trabajo realizado", e.trabajo]].forEach(([t, v], k) => {
+        if (!v) return;
+        if (!multi || k > 0) { x.fillStyle = LINE; x.fillRect(P, y - 10, W - P * 2, 2); y += 34; } else y += 6;
+        label(t, P, y); y += 36;
+        y += para(v, P, y, W - P * 2) + 20;
+      });
+      if (multi) y += 16;
     });
 
     // Tabla

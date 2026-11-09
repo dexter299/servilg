@@ -10,7 +10,7 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:ital,wght@1,700;1,800&family=Barlow:wght@400;500;600;700&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="admin.css?v=1794200764">
+<link rel="stylesheet" href="admin.css?v=1794201693">
 </head>
 <body>
 
@@ -101,36 +101,43 @@
         </fieldset>
 
         <fieldset>
-          <legend>Equipo</legend>
-          <div class="grid">
-            <label>Tipo
-              <select name="equipo">
-                <option>Lavadora</option><option>Nevera</option><option>Secadora</option>
-                <option>Lavasecadora</option><option>Microondas</option><option>Otro</option>
-              </select>
-            </label>
-            <label>Marca
-              <div class="combo">
-                <input name="marca" value="LG" autocomplete="off" role="combobox" aria-expanded="false" aria-controls="marcas-list" aria-autocomplete="list">
-                <button type="button" class="combo-btn" aria-label="Ver marcas">▾</button>
-                <ul id="marcas-list" class="combo-list" role="listbox" hidden></ul>
-              </div>
-            </label>
-            <label><span>Modelo <span class="opt">(opcional)</span></span><input name="modelo"></label>
-            <label><span>Serial <span class="opt">(opcional)</span></span><input name="serial"></label>
-          </div>
-
-          <div class="pick">
-            <span class="pick-title">Falla reportada <small>toca las que apliquen o escribe</small></span>
-            <div class="chips" data-for="falla"></div>
-            <textarea name="falla" rows="2"></textarea>
-          </div>
-          <div class="pick">
-            <span class="pick-title">Trabajo realizado <small>toca los que apliquen o escribe</small></span>
-            <div class="chips" data-for="trabajo"></div>
-            <textarea name="trabajo" rows="3"></textarea>
-          </div>
+          <legend>Equipos</legend>
+          <div id="equipos" class="equipos"></div>
+          <button id="add-equipo" type="button" class="btn btn-ghost btn-sm">+ Agregar otro equipo</button>
         </fieldset>
+
+        <template id="tpl-equipo">
+          <div class="equipo">
+            <div class="equipo-head"><b class="equipo-n"></b><button type="button" class="link danger eq-rm">Quitar</button></div>
+            <div class="grid">
+              <label>Tipo
+                <select data-k="equipo">
+                  <option>Lavadora</option><option>Nevera</option><option>Secadora</option>
+                  <option>Lavasecadora</option><option>Microondas</option><option>Otro</option>
+                </select>
+              </label>
+              <label>Marca
+                <div class="combo">
+                  <input data-k="marca" value="LG" autocomplete="off" role="combobox" aria-expanded="false" aria-autocomplete="list">
+                  <button type="button" class="combo-btn" aria-label="Ver marcas">▾</button>
+                  <ul class="combo-list" role="listbox" hidden></ul>
+                </div>
+              </label>
+              <label><span>Modelo <span class="opt">(opcional)</span></span><input data-k="modelo"></label>
+              <label><span>Serial <span class="opt">(opcional)</span></span><input data-k="serial"></label>
+            </div>
+            <div class="pick">
+              <span class="pick-title">Falla reportada <small>toca las que apliquen o escribe</small></span>
+              <div class="chips" data-for="falla"></div>
+              <textarea data-k="falla" rows="2"></textarea>
+            </div>
+            <div class="pick">
+              <span class="pick-title">Trabajo realizado <small>toca los que apliquen o escribe</small></span>
+              <div class="chips" data-for="trabajo"></div>
+              <textarea data-k="trabajo" rows="3"></textarea>
+            </div>
+          </div>
+        </template>
 
         <fieldset>
           <legend>Cobro</legend>
@@ -183,7 +190,7 @@
 </div>
 
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-<script src="config.js?v=1794200764"></script>
-<script src="admin.js?v=1794200764"></script>
+<script src="config.js?v=1794201693"></script>
+<script src="admin.js?v=1794201693"></script>
 </body>
 </html>
