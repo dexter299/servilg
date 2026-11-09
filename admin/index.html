@@ -10,7 +10,7 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:ital,wght@1,700;1,800&family=Barlow:wght@400;500;600;700&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="admin.css?v=1793905003">
+<link rel="stylesheet" href="admin.css?v=1794200113">
 </head>
 <body>
 
@@ -37,7 +37,7 @@
 <!-- App -->
 <div id="view-app" hidden>
   <header class="bar">
-    <div class="brand"><img src="../assets/logo.jpg" alt="" width="40" height="40"><span>Panel</span></div>
+    <a class="brand" href="../" title="Ir a la página de inicio"><img src="../assets/logo.jpg" alt="" width="40" height="40"><span>Servi LG</span></a>
     <nav class="tabs">
       <button type="button" data-go="list">Facturas</button>
       <button type="button" data-go="form" class="accent">+ Nueva</button>
@@ -64,7 +64,7 @@
           <legend>Cliente</legend>
           <div class="grid">
             <label>Nombre *<input name="cliente_nombre" required></label>
-            <label>WhatsApp<input name="cliente_telefono" inputmode="tel" placeholder="300 123 4567"></label>
+            <label>WhatsApp<input name="cliente_telefono" type="tel" inputmode="tel" autocomplete="off"></label>
             <label class="span2">Dirección<input name="cliente_direccion"></label>
           </div>
         </fieldset>
@@ -112,7 +112,7 @@
           <datalist id="cobros"></datalist>
           <button id="add-item" type="button" class="btn btn-ghost btn-sm">+ Agregar ítem</button>
           <div class="grid totals-grid">
-            <label>Descuento<input name="descuento" inputmode="numeric" value="0"></label>
+            <label>Descuento<input name="descuento" inputmode="numeric" placeholder="Sin descuento"></label>
             <label>Método de pago
               <select name="metodo_pago">
                 <option>Efectivo</option><option>Transferencia</option><option>Nequi</option>
@@ -130,7 +130,10 @@
 
         <label>Notas<textarea name="notas" rows="2"></textarea></label>
         <p id="form-msg" class="msg" role="alert"></p>
-        <button class="btn btn-primary wide" type="submit">Guardar y generar imagen</button>
+        <div class="savebar">
+          <div class="savebar-total"><span>Total</span><b id="t-total-bar">$0</b></div>
+          <button class="btn btn-primary" type="submit">Guardar y generar imagen</button>
+        </div>
       </form>
     </section>
 
@@ -142,7 +145,7 @@
       </div>
       <div class="actions">
         <button id="a-share" type="button" class="btn btn-primary">Enviar por WhatsApp</button>
-        <button id="a-copy" type="button" class="btn btn-ghost">Copiar imagen</button>
+        <button id="a-copy" type="button" class="btn btn-ghost desk-only">Copiar imagen</button>
         <button id="a-download" type="button" class="btn btn-ghost">Descargar</button>
         <button id="a-chat" type="button" class="btn btn-ghost">Abrir chat del cliente</button>
       </div>
@@ -154,7 +157,7 @@
 </div>
 
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-<script src="config.js?v=1793905003"></script>
-<script src="admin.js?v=1793905003"></script>
+<script src="config.js?v=1794200113"></script>
+<script src="admin.js?v=1794200113"></script>
 </body>
 </html>

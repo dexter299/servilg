@@ -3,11 +3,11 @@
    ============================================================ */
 const CONFIG = {
   // Número de WhatsApp con código de país y sin signos. Ejemplo: "573001234567"
-  whatsapp: "",
+  whatsapp: "573014250810",
   // Mensaje que se escribe solo al abrir WhatsApp
   mensaje: "Hola, quiero agendar una visita con Servi LG.",
   // Textos de la sección final (déjalos vacíos para mostrar el aviso pendiente)
-  telefonoVisible: "",
+  telefonoVisible: "301 425 0810",
   horario: ""
 };
 
@@ -28,17 +28,13 @@ const CONFIG = {
   const hor = document.getElementById("horario");
   if (tel && CONFIG.telefonoVisible) tel.textContent = CONFIG.telefonoVisible;
   if (hor && CONFIG.horario) hor.textContent = CONFIG.horario;
+  else if (hor && hor.parentElement) hor.parentElement.hidden = true;
 })();
 
-/* ---------- Botón flotante de WhatsApp: aparece al salir del banner ---------- */
+/* ---------- Botón de WhatsApp: siempre visible abajo ---------- */
 (function () {
   const fab = document.querySelector(".fab");
-  const hero = document.querySelector(".hero");
-  if (!fab) return;
-  if (!hero || !("IntersectionObserver" in window)) { fab.classList.add("show"); return; }
-  new IntersectionObserver(function (entries) {
-    fab.classList.toggle("show", !entries[0].isIntersecting);
-  }).observe(hero);
+  if (fab) fab.classList.add("show");
 })();
 
 /* ---------- Lavadora interactiva ---------- */

@@ -211,3 +211,66 @@ button{font-family:inherit}
   .washer .lcd-code,.washer .door,.washer .drum{animation:none!important}
   .knob{transition:none}
 }
+
+/* ===== Ajustes para celular (misma página, solo cambia la distribución) ===== */
+@media (max-width:640px){
+  /* encabezado en una sola fila + menú completo debajo */
+  .topbar{flex-wrap:wrap;gap:6px 8px;padding-top:10px;padding-bottom:0}
+  .logo{width:52px;height:52px}
+  .wa-top .long{display:none}
+  .top-actions{gap:2px}
+  .topbar .btn.wa-top{min-height:42px;padding:0 16px;font-size:15px}
+  .login-link{min-height:42px;padding:0 10px}
+  .nav{justify-content:space-between;padding-right:0;-webkit-mask-image:none;mask-image:none;border-top:1px solid #1f1f23;margin-top:4px}
+  .nav a{padding:12px 4px;font-size:15px}
+
+  /* menos espacio vacío entre secciones */
+  .section{padding-top:44px;padding-bottom:44px}
+  .section-head{margin-bottom:24px}
+
+  /* banner */
+  .codes{display:grid;grid-template-columns:repeat(6,minmax(0,1fr));gap:6px}
+  .code-btn{min-width:0;padding:0;font-size:19px}
+  .hero .row{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+  .hero .row .btn{width:100%;padding:0 12px;font-size:16px}
+  .hero .devices{font-size:14px}
+
+  /* servicios: ícono al lado del título */
+  .card{display:grid;grid-template-columns:44px 1fr;align-items:center;gap:6px 16px;padding:20px}
+  .card svg{width:44px;height:44px;grid-row:span 2;align-self:start}
+  .card h3{font-size:19px}
+  .card p{font-size:15px}
+  .grid{gap:12px}
+
+  /* garantía */
+  .warranty{padding:40px 20px}
+
+  /* técnicos: tarjeta horizontal */
+  .grid.team{grid-template-columns:1fr}
+  .tech{flex-direction:row;align-items:stretch;border-radius:20px}
+  .tech-photo{width:116px;flex:none;aspect-ratio:auto;min-height:116px;font-size:0;gap:0}
+  .tech-photo svg{width:44px;height:44px}
+  .tech-info{border-top:0;border-left:3px solid var(--accent);justify-content:center;padding:16px 18px}
+  .tech-info h3{font-size:19px}
+  .tech-info span{font-size:15px}
+
+  /* precios más compactos */
+  .price-card{padding:18px 20px;gap:6px;border-radius:20px}
+  .price-card .price{font-size:32px}
+  .price-card .name,.price-card .note{font-size:14px}
+
+  /* mapa: solo puntos; el nombre aparece en la zona seleccionada */
+  .pin:not(.is-selected) .pin-pill{font-size:0;gap:0;padding:4px}
+
+  /* preguntas */
+  details summary{font-size:16px}
+}
+.logo-link{display:inline-flex;border-radius:999px}
+.logo-link:focus-visible{outline:3px solid #fff;outline-offset:3px}
+
+/* Botón de WhatsApp fijo abajo */
+.fab{display:inline-flex}
+@media (max-width:640px){
+  .fab{left:16px;right:16px;bottom:calc(14px + env(safe-area-inset-bottom));width:auto;padding:0 22px}
+  .fab span{display:inline}
+}

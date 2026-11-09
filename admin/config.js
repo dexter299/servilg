@@ -11,7 +11,7 @@ window.ADMIN_CONFIG = {
     nombre: "Servi LG",
     lema: "Servicio técnico especializado",
     documento: "",        // NIT o cédula, ej. "NIT 900.123.456-7"
-    telefono: "",         // ej. "300 123 4567"
+    telefono: "301 425 0810",
     direccion: "Medellín y Valle de Aburrá",
     web: "servilg.com"
   },

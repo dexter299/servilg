@@ -109,7 +109,7 @@
     row.innerHTML =
       '<label class="desc">Descripción<input data-k="desc" list="cobros" placeholder="Escribe o elige de la lista"></label>' +
       '<label>Cant.<input data-k="cant" inputmode="numeric" value="1"></label>' +
-      '<label>Valor unitario<input data-k="valor" inputmode="numeric" placeholder="0"></label>' +
+      '<label>Valor unitario<input data-k="valor" inputmode="numeric" placeholder="$"></label>' +
       '<button type="button" class="rm" aria-label="Quitar ítem">×</button>';
     if (d.desc) $('[data-k="desc"]', row).value = d.desc;
     if (d.valor) $('[data-k="valor"]', row).value = d.valor.toLocaleString("es-CO");
@@ -244,6 +244,7 @@
     $("#t-sub").textContent = money(sub);
     $("#t-desc").textContent = "−" + money(desc);
     $("#t-total").textContent = money(sub - desc);
+    $("#t-total-bar").textContent = money(sub - desc);
     return { items, sub, desc, total: sub - desc };
   }
   function resetForm() {
