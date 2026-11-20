@@ -3,11 +3,11 @@
    ============================================================ */
 const CONFIG = {
   // Número de WhatsApp con código de país y sin signos. Ejemplo: "573001234567"
-  whatsapp: "573014250810",
+  whatsapp: "573127917849",
   // Mensaje que se escribe solo al abrir WhatsApp
   mensaje: "Hola, quiero agendar una visita con Servi LG.",
   // Textos de la sección final (déjalos vacíos para mostrar el aviso pendiente)
-  telefonoVisible: "301 425 0810",
+  telefonoVisible: "312 791 7849",
   horario: ""
 };
 
